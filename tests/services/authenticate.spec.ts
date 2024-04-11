@@ -1,13 +1,13 @@
-import { User } from "../../../src/models/User";
-import { Authentication } from "../../../src/models/Authentication";
-import { UserRepository } from "../../../src/interfaces/repository";
-import { CustomError } from "../../../src/utils/errors";
+import { User } from "../../src/models/User";
+import { Authentication } from "../../src/models/Authentication";
+import { UserRepository } from "../../src/interfaces/repository";
+import { CustomError } from "../../src/utils/errors";
 import {
   CallUrlCallback,
   CreateAuthentication,
   PasswordValidator,
-} from "../../../src/interfaces/utils";
-import { Authenticate } from "../../../src/services/authenticate";
+} from "../../src/interfaces/utils";
+import { Authenticate } from "../../src/services/authenticate";
 
 interface SutTypes {
   sut: Authenticate;
@@ -19,6 +19,10 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
   class UserRepositoryStub implements UserRepository {
+    create(user: User): Promise<void> {
+      return Promise.resolve();
+    }
+
     getByUsername(username: string): Promise<User> {
       return Promise.resolve({
         username: "any_username",
