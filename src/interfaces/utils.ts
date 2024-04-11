@@ -11,3 +11,7 @@ export interface PasswordValidator {
 export interface CallUrlCallback {
   call(url: string, code: string): void;
 }
+
+export interface Validator<T> {
+  validate(data: T): boolean;
+}
