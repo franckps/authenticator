@@ -6,6 +6,7 @@ import {
   CallUrlCallback,
   CreateAuthentication,
   Validator,
+  PasswordEncrypt,
 } from "../../src/interfaces/utils";
 import { CreateUser } from "../../src/services/createUser";
 
@@ -22,6 +23,7 @@ interface SutTypes {
   sut: CreateUser;
   userValidatorStub: Validator<User>;
   userRepositoryStub: UserRepository;
+  passwordEncryptStub: PasswordEncrypt;
   createAuthenticationStub: CreateAuthentication;
   callUrlCallbackStub: CallUrlCallback;
 }
@@ -74,14 +76,22 @@ class CreateAuthenticationStub implements CreateAuthentication {
   }
 }
 
+class PasswordEncryptStub implements PasswordEncrypt {
+  encrypt(password: string): string {
+    return "any_encryptedPassword";
+  }
+}
+
 const makeSut = (): SutTypes => {
   const userValidatorStub = new UserValidatorStub();
   const userRepositoryStub = new UserRepositoryStub();
+  const passwordEncryptStub = new PasswordEncryptStub();
   const createAuthenticationStub = new CreateAuthenticationStub();
   const callUrlCallbackStub = new CallUrlCallbackStub();
   const sut = new CreateUser(
     userValidatorStub,
     userRepositoryStub,
+    passwordEncryptStub,
     createAuthenticationStub,
     callUrlCallbackStub
   );
@@ -90,6 +100,7 @@ const makeSut = (): SutTypes => {
     sut,
     userValidatorStub,
     userRepositoryStub,
+    passwordEncryptStub,
     createAuthenticationStub,
     callUrlCallbackStub,
   };
@@ -150,6 +161,12 @@ describe("#CreateUser", () => {
       expect(err.message).toEqual("User awready registered");
     }
   });
+  test("Should call the passwordEncrypt encrypt method correctly", async () => {
+    const { sut, passwordEncryptStub } = makeSut();
+    const spyEncrypt = jest.spyOn(passwordEncryptStub, "encrypt");
+    await sut.execute(userData, "any_callback");
+    expect(spyEncrypt).toBeCalledWith("any_password");
+  });
   test("Should call the createAuthentication create method", async () => {
     const { sut, createAuthenticationStub } = makeSut();
     const spyCreate = jest.spyOn(createAuthenticationStub, "create");
@@ -162,7 +179,7 @@ describe("#CreateUser", () => {
     await sut.execute(userData, "any_callback");
     expect(spyCreate).toBeCalledWith({
       username: "any_username",
-      password: "any_password",
+      password: "any_encryptedPassword",
       email: "any_email",
       image: "any_image",
       createdAt: "any_createdAt",

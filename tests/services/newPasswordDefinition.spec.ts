@@ -5,12 +5,14 @@ import { CustomError } from "../../src/utils/errors";
 import {
   CallUrlCallback,
   CreateAuthentication,
+  PasswordEncrypt,
 } from "../../src/interfaces/utils";
 import { NewPasswordDefinition } from "../../src/services/newPasswordDefinition";
 
 interface SutTypes {
   sut: NewPasswordDefinition;
   userRepositoryStub: UserRepository;
+  passwordEncryptStub: PasswordEncrypt;
   createAuthenticationStub: CreateAuthentication;
   callUrlCallbackStub: CallUrlCallback;
 }
@@ -87,18 +89,27 @@ class CreateAuthenticationStub implements CreateAuthentication {
   }
 }
 
+class PasswordEncryptStub implements PasswordEncrypt {
+  encrypt(password: string): string {
+    return "any_encryptedPassword";
+  }
+}
+
 const makeSut = (): SutTypes => {
   const userRepositoryStub = new UserRepositoryStub();
+  const passwordEncryptStub = new PasswordEncryptStub();
   const callUrlCallbackStub = new CallUrlCallbackStub();
   const createAuthenticationStub = new CreateAuthenticationStub();
   const sut = new NewPasswordDefinition(
     userRepositoryStub,
+    passwordEncryptStub,
     createAuthenticationStub,
     callUrlCallbackStub
   );
 
   return {
     userRepositoryStub,
+    passwordEncryptStub,
     createAuthenticationStub,
     callUrlCallbackStub,
     sut,
@@ -140,6 +151,16 @@ describe("#NewPasswordDefinition", () => {
       expect(err.message).toEqual("Unauthorized user");
     }
   });
+  test("Should call the passwordEncrypt encrypt method correctly", async () => {
+    const { sut, passwordEncryptStub } = makeSut();
+    const spyEncrypt = jest.spyOn(passwordEncryptStub, "encrypt");
+    await sut.execute(
+      "any_passwordRecoveryToken",
+      "other_password",
+      "any_callback"
+    );
+    expect(spyEncrypt).toBeCalledWith("other_password");
+  });
   test("Should call the createAuthentication create method", async () => {
     const { sut, createAuthenticationStub } = makeSut();
     const spyCreate = jest.spyOn(createAuthenticationStub, "create");
@@ -173,7 +194,7 @@ describe("#NewPasswordDefinition", () => {
     );
     expect(spyUpdateByUsername).toBeCalledWith("any_username", {
       username: "any_username",
-      password: "other_password",
+      password: "any_encryptedPassword",
       email: "any_email",
       image: "any_image",
       createdAt: "any_createdAt",
