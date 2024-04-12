@@ -16,6 +16,9 @@ interface SutTypes {
 }
 
 class UserRepositoryStub implements UserRepository {
+  getByCode(token: string): Promise<User> {
+    throw new Error("Method not implemented.");
+  }
   getByPasswordRecoveryToken(token: string): Promise<User> {
     return Promise.resolve({
       username: "any_username",
@@ -26,6 +29,7 @@ class UserRepositoryStub implements UserRepository {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "any_code",
+        codeExpiresIn: "any_codeExpiresIn",
         token: "any_token",
         createdAt: "any_createdAt",
         expiresIn: "any_expiresIn",
@@ -50,6 +54,7 @@ class UserRepositoryStub implements UserRepository {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "any_code",
+        codeExpiresIn: "any_codeExpiresIn",
         token: "any_token",
         createdAt: "any_createdAt",
         expiresIn: "any_expiresIn",
