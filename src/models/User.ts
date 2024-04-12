@@ -8,4 +8,6 @@ export interface User {
   createdAt?: string;
   updatedAt?: string;
   authentication?: Authentication;
+  passwordRecoveryToken?: string;
+  passwordRecoveryExpiresIn?: string;
 }

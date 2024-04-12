@@ -15,3 +15,17 @@ export interface CallUrlCallback {
 export interface Validator<T> {
   validate(data: T): boolean;
 }
+
+export interface TokenValidator {
+  validateTokenData(authentication: Authentication): boolean;
+}
+export interface PasswordRecoveryGenerate {
+  generateRecovery(): {
+    passwordRecoveryToken: string;
+    passwordRecoveryExpiresIn: string;
+  };
+}
+
+export interface SendRecoveryToken {
+  sendRecovery(passwordRecoveryToken: string): Promise<void>;
+}
