@@ -4,6 +4,10 @@ export interface CreateAuthentication {
   create(): Authentication;
 }
 
+export interface PasswordEncrypt {
+  encrypt(password: string): string;
+}
+
 export interface PasswordValidator {
   isEqual(passwordToTest: string, userPassword: string): boolean;
 }
