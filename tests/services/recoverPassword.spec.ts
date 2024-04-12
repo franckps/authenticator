@@ -152,6 +152,7 @@ describe("#RecoveryPassword", () => {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "any_code",
+        codeExpiresIn: "any_codeExpiresIn",
         token: "any_token",
         createdAt: "any_createdAt",
         expiresIn: "any_expiresIn",

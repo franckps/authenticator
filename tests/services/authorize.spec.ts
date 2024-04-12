@@ -132,6 +132,7 @@ describe("#Authorize", () => {
     await sut.execute("any_token");
     expect(spyValidateTokenData).toBeCalledWith({
       code: "any_code",
+      codeExpiresIn: "any_codeExpiresIn",
       token: "any_token",
       createdAt: "any_createdAt",
       expiresIn: "any_expiresIn",

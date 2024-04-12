@@ -156,7 +156,7 @@ describe("#NewPasswordDefinition", () => {
     const spyCreate = jest.spyOn(createAuthenticationStub, "create");
     spyCreate.mockReturnValue({
       code: "other_code",
-      codeExpiresIn: "any_codeExpiresIn",
+      codeExpiresIn: "other_codeExpiresIn",
       token: "other_token",
       createdAt: "other_createdAt",
       expiresIn: "other_expiresIn",
@@ -180,6 +180,7 @@ describe("#NewPasswordDefinition", () => {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "other_code",
+        codeExpiresIn: "other_codeExpiresIn",
         token: "other_token",
         createdAt: "other_createdAt",
         expiresIn: "other_expiresIn",

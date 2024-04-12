@@ -111,6 +111,7 @@ describe("#GetUserByToken", () => {
     await sut.execute("any_token");
     expect(spyValidateTokenData).toBeCalledWith({
       code: "any_code",
+      codeExpiresIn: "any_codeExpiresIn",
       token: "any_token",
       createdAt: "any_createdAt",
       expiresIn: "any_expiresIn",
@@ -144,6 +145,7 @@ describe("#GetUserByToken", () => {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "any_code",
+        codeExpiresIn: "any_codeExpiresIn",
         token: "any_token",
         createdAt: "any_createdAt",
         expiresIn: "any_expiresIn",
