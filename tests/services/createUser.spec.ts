@@ -27,6 +27,12 @@ interface SutTypes {
 }
 
 class UserRepositoryStub implements UserRepository {
+  getByToken(token: string): Promise<User> {
+    throw new Error("Method not implemented.");
+  }
+  getByPasswordRecoveryToken(token: string): Promise<User> {
+    throw new Error("Method not implemented.");
+  }
   create(user: User): Promise<void> {
     return Promise.resolve();
   }

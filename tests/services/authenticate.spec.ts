@@ -19,6 +19,12 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
   class UserRepositoryStub implements UserRepository {
+    getByPasswordRecoveryToken(token: string): Promise<User> {
+      throw new Error("Method not implemented.");
+    }
+    getByToken(token: string): Promise<User> {
+      throw new Error("Method not implemented.");
+    }
     create(user: User): Promise<void> {
       return Promise.resolve();
     }
