@@ -6,4 +6,5 @@ export interface UserRepository {
   updateByUsername(username: string, user: User): Promise<void>;
   getByToken(token: string): Promise<User>;
   getByPasswordRecoveryToken(token: string): Promise<User>;
+  getByCode(token: string): Promise<User>;
 }

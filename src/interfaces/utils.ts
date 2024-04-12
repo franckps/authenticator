@@ -29,3 +29,7 @@ export interface PasswordRecoveryGenerate {
 export interface SendRecoveryToken {
   sendRecovery(passwordRecoveryToken: string): Promise<void>;
 }
+
+export interface CodeValidator {
+  validateCode(code: string, expiresIn: string): boolean;
+}
