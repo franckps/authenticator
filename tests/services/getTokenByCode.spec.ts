@@ -21,10 +21,10 @@ class UserRepositoryStub implements UserRepository {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "any_code",
-        codeExpiresIn: "any_codeExpiresIn",
+        codeExpiresIn: 1,
         token: "any_token",
         createdAt: "any_createdAt",
-        expiresIn: "any_expiresIn",
+        expiresIn: 1,
         isActive: true,
       },
     });
@@ -49,10 +49,10 @@ class UserRepositoryStub implements UserRepository {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "any_code",
-        codeExpiresIn: "any_codeExpiresIn",
+        codeExpiresIn: 1,
         token: "any_token",
         createdAt: "any_createdAt",
-        expiresIn: "any_expiresIn",
+        expiresIn: 1,
         isActive: true,
       },
     });
@@ -104,7 +104,7 @@ describe("GetTokenByCode", () => {
     const { sut, codeValidatorStub } = makeSut();
     const spyValidateCode = jest.spyOn(codeValidatorStub, "validateCode");
     await sut.execute("any_code");
-    expect(spyValidateCode).toBeCalledWith("any_code", "any_codeExpiresIn");
+    expect(spyValidateCode).toBeCalledWith("any_code", 1);
   });
   test("Should fail case code be not valid", async () => {
     const { sut, codeValidatorStub } = makeSut();
@@ -124,7 +124,7 @@ describe("GetTokenByCode", () => {
     expect(result).toEqual({
       token: "any_token",
       createdAt: "any_createdAt",
-      expiresIn: "any_expiresIn",
+      expiresIn: 1,
     });
   });
 });

@@ -32,10 +32,10 @@ class UserRepositoryStub implements UserRepository {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "any_code",
-        codeExpiresIn: "any_codeExpiresIn",
+        codeExpiresIn: 1,
         token: "any_token",
         createdAt: "any_createdAt",
-        expiresIn: "any_expiresIn",
+        expiresIn: 1,
         isActive: true,
       },
     });
@@ -51,10 +51,10 @@ class UserRepositoryStub implements UserRepository {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "any_code",
-        codeExpiresIn: "any_codeExpiresIn",
+        codeExpiresIn: 1,
         token: "any_token",
         createdAt: "any_createdAt",
-        expiresIn: "any_expiresIn",
+        expiresIn: 1,
         isActive: true,
       },
     });
@@ -111,10 +111,10 @@ describe("#GetUserByToken", () => {
     await sut.execute("any_token");
     expect(spyValidateTokenData).toBeCalledWith({
       code: "any_code",
-      codeExpiresIn: "any_codeExpiresIn",
+      codeExpiresIn: 1,
       token: "any_token",
       createdAt: "any_createdAt",
-      expiresIn: "any_expiresIn",
+      expiresIn: 1,
       isActive: true,
     });
   });
@@ -145,10 +145,10 @@ describe("#GetUserByToken", () => {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "any_code",
-        codeExpiresIn: "any_codeExpiresIn",
+        codeExpiresIn: 1,
         token: "any_token",
         createdAt: "any_createdAt",
-        expiresIn: "any_expiresIn",
+        expiresIn: 1,
         isActive: true,
       },
     });

@@ -31,10 +31,10 @@ class UserRepositoryStub implements UserRepository {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "any_code",
-        codeExpiresIn: "any_codeExpiresIn",
+        codeExpiresIn: 1,
         token: "any_token",
         createdAt: "any_createdAt",
-        expiresIn: "any_expiresIn",
+        expiresIn: 1,
         isActive: true,
       },
     });
@@ -56,10 +56,10 @@ class UserRepositoryStub implements UserRepository {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "any_code",
-        codeExpiresIn: "any_codeExpiresIn",
+        codeExpiresIn: 1,
         token: "any_token",
         createdAt: "any_createdAt",
-        expiresIn: "any_expiresIn",
+        expiresIn: 1,
         isActive: true,
       },
     });
@@ -80,10 +80,10 @@ class CreateAuthenticationStub implements CreateAuthentication {
   create(): Authentication {
     return {
       code: "any_code",
-      codeExpiresIn: "any_codeExpiresIn",
+      codeExpiresIn: 1,
       token: "any_token",
       createdAt: "any_createdAt",
-      expiresIn: "any_expiresIn",
+      expiresIn: 1,
       isActive: true,
     };
   }
@@ -177,10 +177,10 @@ describe("#NewPasswordDefinition", () => {
     const spyCreate = jest.spyOn(createAuthenticationStub, "create");
     spyCreate.mockReturnValue({
       code: "other_code",
-      codeExpiresIn: "other_codeExpiresIn",
+      codeExpiresIn: 2,
       token: "other_token",
       createdAt: "other_createdAt",
-      expiresIn: "other_expiresIn",
+      expiresIn: 2,
       isActive: true,
     });
     const spyUpdateByUsername = jest.spyOn(
@@ -201,10 +201,10 @@ describe("#NewPasswordDefinition", () => {
       updatedAt: "any_updatedAt",
       authentication: {
         code: "other_code",
-        codeExpiresIn: "other_codeExpiresIn",
+        codeExpiresIn: 2,
         token: "other_token",
         createdAt: "other_createdAt",
-        expiresIn: "other_expiresIn",
+        expiresIn: 2,
         isActive: true,
       },
     });
