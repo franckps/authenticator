@@ -1,8 +1,8 @@
 export interface Authentication {
   code: string;
-  codeExpiresIn: string;
+  codeExpiresIn: number;
   token: string;
   createdAt: string;
-  expiresIn: string;
+  expiresIn: number;
   isActive: boolean;
 }
