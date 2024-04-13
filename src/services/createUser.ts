@@ -1,6 +1,5 @@
 import { UserRepository } from "../interfaces/repository";
 import {
-  CallUrlCallback,
   CreateAuthentication,
   PasswordEncrypt,
   Validator,
@@ -13,11 +12,10 @@ export class CreateUser {
     private readonly userValidator: Validator<User>,
     private readonly userRepository: UserRepository,
     private readonly passwordEncrypt: PasswordEncrypt,
-    private readonly createAuthentication: CreateAuthentication,
-    private readonly callUrlCallback: CallUrlCallback
+    private readonly createAuthentication: CreateAuthentication
   ) {}
 
-  async execute(userData: User, callback: string): Promise<void> {
+  async execute(userData: User, callback: string): Promise<string> {
     this.userValidator.validate(userData);
     const user = await this.userRepository.getByUsername(userData.username);
     if (!!user) throw new CustomError("User awready registered");
@@ -31,6 +29,6 @@ export class CreateUser {
     const authentication = this.createAuthentication.create();
     newUser.authentication = authentication;
     this.userRepository.create(newUser);
-    this.callUrlCallback.call(callback, authentication.code);
+    return authentication.code;
   }
 }

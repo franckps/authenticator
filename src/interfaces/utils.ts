@@ -12,10 +12,6 @@ export interface PasswordValidator {
   isEqual(passwordToTest: string, userPassword: string): Promise<boolean>;
 }
 
-export interface CallUrlCallback {
-  call(url: string, code: string): void;
-}
-
 export interface Validator<T> {
   validate(data: T): boolean;
 }

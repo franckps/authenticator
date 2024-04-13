@@ -1,24 +1,19 @@
 import { CustomError } from "../utils/errors";
 import { UserRepository } from "../interfaces/repository";
-import {
-  CallUrlCallback,
-  CreateAuthentication,
-  PasswordEncrypt,
-} from "../interfaces/utils";
+import { CreateAuthentication, PasswordEncrypt } from "../interfaces/utils";
 
 export class NewPasswordDefinition {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly passwordEncrypt: PasswordEncrypt,
-    private readonly createAuthentication: CreateAuthentication,
-    private readonly callUrlCallback: CallUrlCallback
+    private readonly createAuthentication: CreateAuthentication
   ) {}
 
   async execute(
     passwordRecoveryToken: string,
     newPassword: string,
     callback: string
-  ): Promise<void> {
+  ): Promise<string> {
     const user = await this.userRepository.getByPasswordRecoveryToken(
       passwordRecoveryToken
     );
@@ -28,6 +23,6 @@ export class NewPasswordDefinition {
     const authentication = this.createAuthentication.create();
     user.authentication = authentication;
     await this.userRepository.updateByUsername(user.username, user);
-    this.callUrlCallback.call(callback, authentication.code);
+    return authentication.code;
   }
 }

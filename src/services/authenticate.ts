@@ -1,17 +1,12 @@
 import { CustomError } from "../utils/errors";
 import { UserRepository } from "../interfaces/repository";
-import {
-  CallUrlCallback,
-  CreateAuthentication,
-  PasswordValidator,
-} from "../interfaces/utils";
+import { CreateAuthentication, PasswordValidator } from "../interfaces/utils";
 
 export class Authenticate {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly passwordValidator: PasswordValidator,
-    private readonly createAuthentication: CreateAuthentication,
-    private readonly callUrlCallback: CallUrlCallback
+    private readonly createAuthentication: CreateAuthentication
   ) {}
 
   async execute({
@@ -22,7 +17,7 @@ export class Authenticate {
     username: string;
     password: string;
     callback: string;
-  }): Promise<void> {
+  }): Promise<string> {
     const user = await this.userRepository.getByUsername(username);
     if (!user) throw new CustomError("Invalid username or password");
     const isValid = await this.passwordValidator.isEqual(
@@ -33,6 +28,6 @@ export class Authenticate {
     const authentication = this.createAuthentication.create();
     user.authentication = authentication;
     await this.userRepository.updateByUsername(username, user);
-    this.callUrlCallback.call(callback, user.authentication.code);
+    return authentication.code;
   }
 }
