@@ -9,5 +9,5 @@ export interface User {
   updatedAt?: string;
   authentication?: Authentication;
   passwordRecoveryToken?: string;
-  passwordRecoveryExpiresIn?: string;
+  passwordRecoveryExpiresIn?: number;
 }

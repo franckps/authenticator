@@ -22,7 +22,7 @@ export interface TokenValidator {
 export interface PasswordRecoveryGenerate {
   generateRecovery(): {
     passwordRecoveryToken: string;
-    passwordRecoveryExpiresIn: string;
+    passwordRecoveryExpiresIn: number;
   };
 }
 
