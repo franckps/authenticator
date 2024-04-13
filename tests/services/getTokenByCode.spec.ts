@@ -1,4 +1,5 @@
 import { User } from "../../src/models/User";
+import { Authentication } from "../../src/models/Authentication";
 import { UserRepository } from "../../src/interfaces/repository";
 import { CustomError } from "../../src/utils/errors";
 import { CodeValidator } from "../../src/interfaces/utils";
@@ -64,7 +65,7 @@ class UserRepositoryStub implements UserRepository {
 }
 
 class CodeValidatorStub implements CodeValidator {
-  validateCode(code: string, expiresIn: string): boolean {
+  validateCode(authentication: Authentication): boolean {
     return true;
   }
 }
@@ -104,7 +105,14 @@ describe("GetTokenByCode", () => {
     const { sut, codeValidatorStub } = makeSut();
     const spyValidateCode = jest.spyOn(codeValidatorStub, "validateCode");
     await sut.execute("any_code");
-    expect(spyValidateCode).toBeCalledWith("any_code", 1);
+    expect(spyValidateCode).toBeCalledWith({
+      code: "any_code",
+      codeExpiresIn: 1,
+      token: "any_token",
+      createdAt: "any_createdAt",
+      expiresIn: 1,
+      isActive: true,
+    });
   });
   test("Should fail case code be not valid", async () => {
     const { sut, codeValidatorStub } = makeSut();
