@@ -23,7 +23,7 @@ export class NewPasswordDefinition {
       passwordRecoveryToken
     );
     if (!user) throw new CustomError("Unauthorized user");
-    const encryptedPassword = this.passwordEncrypt.encrypt(newPassword);
+    const encryptedPassword = await this.passwordEncrypt.encrypt(newPassword);
     user.password = encryptedPassword;
     const authentication = this.createAuthentication.create();
     user.authentication = authentication;

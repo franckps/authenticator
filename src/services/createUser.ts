@@ -21,7 +21,9 @@ export class CreateUser {
     this.userValidator.validate(userData);
     const user = await this.userRepository.getByUsername(userData.username);
     if (!!user) throw new CustomError("User awready registered");
-    const encryptedPassword = this.passwordEncrypt.encrypt(userData.password);
+    const encryptedPassword = await this.passwordEncrypt.encrypt(
+      userData.password
+    );
     const newUser = {
       ...userData,
       password: encryptedPassword,

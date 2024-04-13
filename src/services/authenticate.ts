@@ -25,7 +25,10 @@ export class Authenticate {
   }): Promise<void> {
     const user = await this.userRepository.getByUsername(username);
     if (!user) throw new CustomError("Invalid username or password");
-    const isValid = this.passwordValidator.isEqual(password, user.password);
+    const isValid = await this.passwordValidator.isEqual(
+      password,
+      user.password
+    );
     if (!isValid) throw new CustomError("Invalid username or password");
     const authentication = this.createAuthentication.create();
     user.authentication = authentication;
