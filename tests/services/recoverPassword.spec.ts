@@ -71,11 +71,11 @@ class UserRepositoryStub implements UserRepository {
 class PasswordRecoveryGenerateStub implements PasswordRecoveryGenerate {
   generateRecovery(): {
     passwordRecoveryToken: string;
-    passwordRecoveryExpiresIn: string;
+    passwordRecoveryExpiresIn: number;
   } {
     return {
       passwordRecoveryToken: "any_passwordRecoveryToken",
-      passwordRecoveryExpiresIn: "any_passwordRecoveryExpiresIn",
+      passwordRecoveryExpiresIn: 1,
     };
   }
 }
@@ -159,7 +159,7 @@ describe("#RecoveryPassword", () => {
         isActive: true,
       },
       passwordRecoveryToken: "any_passwordRecoveryToken",
-      passwordRecoveryExpiresIn: "any_passwordRecoveryExpiresIn",
+      passwordRecoveryExpiresIn: 1,
     });
   });
   test("Should call sendRecoveryToken correctly", async () => {
