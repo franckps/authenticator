@@ -6,6 +6,8 @@ module.exports = {
     "!<rootDir>/src/domain/**",
     "!<rootDir>/src/main/**",
     "!<rootDir>/src/**/protocols/**",
+    "!<rootDir>/src/**/models/**",
+    "!<rootDir>/src/**/interfaces/**",
   ],
   coverageDirectory: "coverage",
   coverageProvider: "v8",
