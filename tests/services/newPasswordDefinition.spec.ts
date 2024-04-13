@@ -3,7 +3,6 @@ import { Authentication } from "../../src/models/Authentication";
 import { UserRepository } from "../../src/interfaces/repository";
 import { CustomError } from "../../src/utils/errors";
 import {
-  CallUrlCallback,
   CreateAuthentication,
   PasswordEncrypt,
 } from "../../src/interfaces/utils";
@@ -14,7 +13,6 @@ interface SutTypes {
   userRepositoryStub: UserRepository;
   passwordEncryptStub: PasswordEncrypt;
   createAuthenticationStub: CreateAuthentication;
-  callUrlCallbackStub: CallUrlCallback;
 }
 
 class UserRepositoryStub implements UserRepository {
@@ -70,12 +68,6 @@ class UserRepositoryStub implements UserRepository {
   }
 }
 
-class CallUrlCallbackStub implements CallUrlCallback {
-  call(url: string, code: string): void {
-    return;
-  }
-}
-
 class CreateAuthenticationStub implements CreateAuthentication {
   create(): Authentication {
     return {
@@ -98,20 +90,17 @@ class PasswordEncryptStub implements PasswordEncrypt {
 const makeSut = (): SutTypes => {
   const userRepositoryStub = new UserRepositoryStub();
   const passwordEncryptStub = new PasswordEncryptStub();
-  const callUrlCallbackStub = new CallUrlCallbackStub();
   const createAuthenticationStub = new CreateAuthenticationStub();
   const sut = new NewPasswordDefinition(
     userRepositoryStub,
     passwordEncryptStub,
-    createAuthenticationStub,
-    callUrlCallbackStub
+    createAuthenticationStub
   );
 
   return {
     userRepositoryStub,
     passwordEncryptStub,
     createAuthenticationStub,
-    callUrlCallbackStub,
     sut,
   };
 };
@@ -209,14 +198,13 @@ describe("#NewPasswordDefinition", () => {
       },
     });
   });
-  test("Should call the callback correctly case authenticated", async () => {
-    const { sut, callUrlCallbackStub } = makeSut();
-    const spyCall = jest.spyOn(callUrlCallbackStub, "call");
-    await sut.execute(
+  test("Should return code case authenticated", async () => {
+    const { sut } = makeSut();
+    const resultCode = await sut.execute(
       "any_passwordRecoveryToken",
       "other_password",
       "any_callback"
     );
-    expect(spyCall).toBeCalledWith("any_callback", "any_code");
+    expect(resultCode).toEqual("any_code");
   });
 });

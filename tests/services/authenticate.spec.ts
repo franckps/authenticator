@@ -3,7 +3,6 @@ import { Authentication } from "../../src/models/Authentication";
 import { UserRepository } from "../../src/interfaces/repository";
 import { CustomError } from "../../src/utils/errors";
 import {
-  CallUrlCallback,
   CreateAuthentication,
   PasswordValidator,
 } from "../../src/interfaces/utils";
@@ -14,7 +13,6 @@ interface SutTypes {
   userRepositoryStub: UserRepository;
   passwordValidatorStub: PasswordValidator;
   createAuthenticationStub: CreateAuthentication;
-  callUrlCallbackStub: CallUrlCallback;
 }
 
 const makeSut = (): SutTypes => {
@@ -62,12 +60,6 @@ const makeSut = (): SutTypes => {
     }
   }
 
-  class CallUrlCallbackStub implements CallUrlCallback {
-    call(url: string, code: string): void {
-      return;
-    }
-  }
-
   class CreateAuthenticationStub implements CreateAuthentication {
     create(): Authentication {
       return {
@@ -83,20 +75,17 @@ const makeSut = (): SutTypes => {
 
   const userRepositoryStub = new UserRepositoryStub();
   const passwordValidatorStub = new PasswordValidatorStub();
-  const callUrlCallbackStub = new CallUrlCallbackStub();
   const createAuthenticationStub = new CreateAuthenticationStub();
   const sut = new Authenticate(
     userRepositoryStub,
     passwordValidatorStub,
-    createAuthenticationStub,
-    callUrlCallbackStub
+    createAuthenticationStub
   );
 
   return {
     userRepositoryStub,
     passwordValidatorStub,
     createAuthenticationStub,
-    callUrlCallbackStub,
     sut,
   };
 };
@@ -192,14 +181,13 @@ describe("#Authenticate", () => {
       },
     });
   });
-  test("Should call the callback correctly case authenticated", async () => {
-    const { sut, callUrlCallbackStub } = makeSut();
-    const spyCall = jest.spyOn(callUrlCallbackStub, "call");
-    await sut.execute({
+  test("Should return the code", async () => {
+    const { sut } = makeSut();
+    const resultCode = await sut.execute({
       username: "any_username",
       password: "any_password",
       callback: "any_callback",
     });
-    expect(spyCall).toBeCalledWith("any_callback", "any_code");
+    expect(resultCode).toEqual("any_code");
   });
 });
