@@ -32,5 +32,5 @@ export interface SendRecoveryToken {
 }
 
 export interface CodeValidator {
-  validateCode(code: string, expiresIn: string): boolean;
+  validateCode(authentication: Authentication): boolean;
 }

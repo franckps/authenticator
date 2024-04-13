@@ -13,10 +13,7 @@ export class GetTokenByCode {
   ): Promise<{ token: string; createdAt: string; expiresIn: string }> {
     const user = await this.userRepository.getByCode(code);
     if (!user) throw new CustomError("Unauthorized user");
-    const isValid = this.codeValidator.validateCode(
-      (user.authentication as any).code,
-      (user.authentication as any).codeExpiresIn
-    );
+    const isValid = this.codeValidator.validateCode(user.authentication as any);
     if (!isValid) throw new CustomError("Unauthorized user");
     return {
       token: (user.authentication as any).token,
