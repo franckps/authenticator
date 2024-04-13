@@ -57,8 +57,8 @@ const makeSut = (): SutTypes => {
   }
 
   class PasswordValidatorStub implements PasswordValidator {
-    isEqual(passwordToTest: string, userPassword: string): boolean {
-      return true;
+    isEqual(passwordToTest: string, userPassword: string): Promise<boolean> {
+      return Promise.resolve(true);
     }
   }
 
@@ -141,7 +141,7 @@ describe("#Authenticate", () => {
   test("Should fail if password be not valid", async () => {
     const { sut, passwordValidatorStub } = makeSut();
     const spyIsEqual = jest.spyOn(passwordValidatorStub, "isEqual");
-    spyIsEqual.mockReturnValue(false);
+    spyIsEqual.mockReturnValue(Promise.resolve(false));
     try {
       await sut.execute({
         username: "any_username",

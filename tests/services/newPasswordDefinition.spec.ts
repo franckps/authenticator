@@ -90,8 +90,8 @@ class CreateAuthenticationStub implements CreateAuthentication {
 }
 
 class PasswordEncryptStub implements PasswordEncrypt {
-  encrypt(password: string): string {
-    return "any_encryptedPassword";
+  encrypt(password: string): Promise<string> {
+    return Promise.resolve("any_encryptedPassword");
   }
 }
 
