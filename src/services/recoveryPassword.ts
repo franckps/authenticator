@@ -20,6 +20,16 @@ export class RecoveryPassword {
     user.passwordRecoveryToken = passwordRecoveryToken;
     user.passwordRecoveryExpiresIn = passwordRecoveryExpiresIn;
     this.userRepository.updateByUsername(username, user);
-    this.sendRecoveryToken.sendRecovery(passwordRecoveryToken);
+    this.sendRecoveryToken.sendRecovery(
+      {
+        username: user.username,
+        password: user.password,
+        email: user.email,
+        image: user.image,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt,
+      },
+      passwordRecoveryToken
+    );
   }
 }

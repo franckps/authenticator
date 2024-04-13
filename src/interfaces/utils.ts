@@ -1,3 +1,4 @@
+import { User } from "../models/User";
 import { Authentication } from "../models/Authentication";
 
 export interface CreateAuthentication {
@@ -27,7 +28,7 @@ export interface PasswordRecoveryGenerate {
 }
 
 export interface SendRecoveryToken {
-  sendRecovery(passwordRecoveryToken: string): Promise<void>;
+  sendRecovery(user: User, passwordRecoveryToken: string): Promise<void>;
 }
 
 export interface CodeValidator {
