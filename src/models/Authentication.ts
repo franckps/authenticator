@@ -4,6 +4,7 @@ export interface Authentication {
   codeExpiresIn: number;
   token: string;
   createdAt: string;
+  updatedAt: string;
   expiresIn: number;
   isActive: boolean;
 }

@@ -2,6 +2,7 @@ import { User } from "../../models/User";
 import { UserRepository } from "../../interfaces/repository";
 import { ModelDefined } from "sequelize";
 import { Authentication } from "../../models/Authentication";
+import { randomUUID } from "crypto";
 
 export class UserRepositoryImpl implements UserRepository {
   constructor(
@@ -13,6 +14,7 @@ export class UserRepositoryImpl implements UserRepository {
   ) {}
 
   async create(user: User): Promise<void> {
+    user.userId = randomUUID();
     const userData = await this.user.create({
       userId: user.userId,
       username: user.username,
@@ -26,6 +28,7 @@ export class UserRepositoryImpl implements UserRepository {
       throw Error("Failure trying create user");
     let authentication = user.authentication as any;
     authentication.userId = userData.dataValues.userId;
+    authentication.id = userData.dataValues.userId;
     await this.authentication.create(authentication);
   }
   async getByUsername(username: string): Promise<User> {
@@ -50,6 +53,7 @@ export class UserRepositoryImpl implements UserRepository {
         codeExpiresIn: authenticate.at(0).dataValues.codeExpiresIn,
         token: authenticate.at(0).dataValues.token,
         createdAt: authenticate.at(0).dataValues.createdAt,
+        updatedAt: authenticate.at(0).dataValues.updatedAt,
         expiresIn: authenticate.at(0).dataValues.expiresIn,
         isActive: authenticate.at(0).dataValues.isActive,
       },
@@ -84,6 +88,7 @@ export class UserRepositoryImpl implements UserRepository {
           codeExpiresIn: user.authentication.codeExpiresIn,
           token: user.authentication.token,
           createdAt: user.authentication.createdAt,
+          updatedAt: user.authentication.updatedAt,
           expiresIn: user.authentication.expiresIn,
           isActive: user.authentication.isActive,
         },
@@ -116,6 +121,7 @@ export class UserRepositoryImpl implements UserRepository {
         codeExpiresIn: result.at(0).dataValues.codeExpiresIn,
         token: result.at(0).dataValues.token,
         createdAt: result.at(0).dataValues.createdAt,
+        updatedAt: result.at(0).dataValues.updatedAt,
         expiresIn: result.at(0).dataValues.expiresIn,
         isActive: result.at(0).dataValues.isActive,
       },
@@ -142,6 +148,7 @@ export class UserRepositoryImpl implements UserRepository {
         codeExpiresIn: authenticate.at(0).dataValues.codeExpiresIn,
         token: authenticate.at(0).dataValues.token,
         createdAt: authenticate.at(0).dataValues.createdAt,
+        updatedAt: authenticate.at(0).dataValues.updatedAt,
         expiresIn: authenticate.at(0).dataValues.expiresIn,
         isActive: authenticate.at(0).dataValues.isActive,
       },
@@ -169,6 +176,7 @@ export class UserRepositoryImpl implements UserRepository {
         codeExpiresIn: authResult.dataValues.codeExpiresIn,
         token: authResult.dataValues.token,
         createdAt: authResult.dataValues.createdAt,
+        updatedAt: authResult.dataValues.updatedAt,
         expiresIn: authResult.dataValues.expiresIn,
         isActive: authResult.dataValues.isActive,
       },

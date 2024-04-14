@@ -9,6 +9,7 @@ export class CreateAuthenticationImpl implements CreateAuthentication {
       codeExpiresIn: 1000 * 30, //30 secs
       token: randomUUID(),
       createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       expiresIn: 1000 * 60 * 60 * 24 * 3, //3 days
       isActive: true,
     };
