@@ -25,6 +25,7 @@ class UserRepositoryStub implements UserRepository {
         codeExpiresIn: 1,
         token: "any_token",
         createdAt: "any_createdAt",
+        updatedAt: "any_updatedAt",
         expiresIn: 1,
         isActive: true,
       },
@@ -53,6 +54,7 @@ class UserRepositoryStub implements UserRepository {
         codeExpiresIn: 1,
         token: "any_token",
         createdAt: "any_createdAt",
+        updatedAt: "any_updatedAt",
         expiresIn: 1,
         isActive: true,
       },
@@ -110,6 +112,7 @@ describe("GetTokenByCode", () => {
       codeExpiresIn: 1,
       token: "any_token",
       createdAt: "any_createdAt",
+      updatedAt: "any_updatedAt",
       expiresIn: 1,
       isActive: true,
     });

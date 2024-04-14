@@ -20,6 +20,7 @@ describe("#TokenValidatorImpl", () => {
         codeExpiresIn: 1,
         token: "321",
         createdAt: new Date().toISOString(),
+        updatedAt: "",
         expiresIn: 10000,
         isActive: false,
       });
@@ -34,6 +35,7 @@ describe("#TokenValidatorImpl", () => {
         codeExpiresIn: 1,
         token: "321",
         createdAt: new Date().toISOString(),
+        updatedAt: "",
         expiresIn: -10000,
         isActive: true,
       });
@@ -48,6 +50,7 @@ describe("#TokenValidatorImpl", () => {
         codeExpiresIn: 1,
         token: "321",
         createdAt: new Date().toISOString(),
+        updatedAt: "",
         expiresIn: 10000,
         isActive: true,
       });
@@ -65,6 +68,7 @@ describe("#TokenValidatorImpl", () => {
         codeExpiresIn: 10000,
         token: "321",
         createdAt: new Date().toISOString(),
+        updatedAt: "",
         expiresIn: 1,
         isActive: false,
       });
@@ -79,6 +83,7 @@ describe("#TokenValidatorImpl", () => {
         codeExpiresIn: -10000,
         token: "321",
         createdAt: new Date().toISOString(),
+        updatedAt: "",
         expiresIn: 1,
         isActive: true,
       });
@@ -93,6 +98,7 @@ describe("#TokenValidatorImpl", () => {
         codeExpiresIn: 10000,
         token: "321",
         createdAt: new Date().toISOString(),
+        updatedAt: "",
         expiresIn: 1,
         isActive: true,
       });

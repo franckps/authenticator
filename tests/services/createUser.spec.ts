@@ -62,6 +62,7 @@ class CreateAuthenticationStub implements CreateAuthentication {
       codeExpiresIn: 1,
       token: "any_token",
       createdAt: "any_createdAt",
+      updatedAt: "any_updatedAt",
       expiresIn: 1,
       isActive: true,
     };
@@ -137,6 +138,7 @@ describe("#CreateUser", () => {
           codeExpiresIn: 1,
           token: "any_token",
           createdAt: "any_createdAt",
+          updatedAt: "any_updatedAt",
           expiresIn: 1,
           isActive: true,
         },
@@ -178,6 +180,7 @@ describe("#CreateUser", () => {
         codeExpiresIn: 1,
         token: "any_token",
         createdAt: "any_createdAt",
+        updatedAt: "any_updatedAt",
         expiresIn: 1,
         isActive: true,
       },
