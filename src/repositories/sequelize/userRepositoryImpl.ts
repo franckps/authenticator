@@ -24,16 +24,7 @@ export class UserRepositoryImpl implements UserRepository {
     });
     if (!userData || !userData.dataValues.userId)
       throw Error("Failure trying create user");
-    let authentication = user.authentication;
-    if (!authentication)
-      authentication = {
-        code: "",
-        codeExpiresIn: 0,
-        token: "",
-        createdAt: new Date().toISOString(),
-        expiresIn: 0,
-        isActive: false,
-      };
+    let authentication = user.authentication as any;
     authentication.userId = userData.dataValues.userId;
     await this.authentication.create(authentication);
   }
