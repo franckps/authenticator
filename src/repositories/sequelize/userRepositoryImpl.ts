@@ -29,40 +29,40 @@ export class UserRepositoryImpl implements UserRepository {
     await this.authentication.create(authentication);
   }
   async getByUsername(username: string): Promise<User> {
-    const result = await this.user.findAll({
+    const result = (await this.user.findAll({
       where: {
         username,
       },
-    });
+    })) as any;
 
     if (!result.at(0)) return null as any;
 
-    const authenticate = await this.authentication.findAll({
+    const authenticate = (await this.authentication.findAll({
       where: {
-        userId: result.at(0)?.dataValues.userId,
+        userId: result.at(0).dataValues.userId,
       },
-    });
+    })) as any;
 
     return {
-      ...(result.at(0)?.dataValues as any),
+      ...(result.at(0).dataValues as any),
       authentication: {
-        code: authenticate.at(0)?.dataValues.code,
-        codeExpiresIn: authenticate.at(0)?.dataValues.codeExpiresIn,
-        token: authenticate.at(0)?.dataValues.token,
-        createdAt: authenticate.at(0)?.dataValues.createdAt,
-        expiresIn: authenticate.at(0)?.dataValues.expiresIn,
-        isActive: authenticate.at(0)?.dataValues.isActive,
+        code: authenticate.at(0).dataValues.code,
+        codeExpiresIn: authenticate.at(0).dataValues.codeExpiresIn,
+        token: authenticate.at(0).dataValues.token,
+        createdAt: authenticate.at(0).dataValues.createdAt,
+        expiresIn: authenticate.at(0).dataValues.expiresIn,
+        isActive: authenticate.at(0).dataValues.isActive,
       },
     };
   }
   async updateByUsername(username: string, user: User): Promise<void> {
-    const userData = await this.user.findAll({
+    const userData = (await this.user.findAll({
       where: {
         username,
       },
-    });
+    })) as any;
 
-    if (!userData || !userData.at(0)) return null as any;
+    if (!userData || !userData.at(0)) return;
 
     await this.user.update(
       {
@@ -77,73 +77,73 @@ export class UserRepositoryImpl implements UserRepository {
       }
     );
 
-    await this.authentication.update(
-      {
-        code: user.authentication?.code,
-        codeExpiresIn: user.authentication?.codeExpiresIn,
-        token: user.authentication?.token,
-        createdAt: user.authentication?.createdAt,
-        expiresIn: user.authentication?.expiresIn,
-        isActive: user.authentication?.isActive,
-      },
-      {
-        where: {
-          userId: userData.at(0)?.dataValues.userId,
+    if (!!user.authentication)
+      await this.authentication.update(
+        {
+          code: user.authentication.code,
+          codeExpiresIn: user.authentication.codeExpiresIn,
+          token: user.authentication.token,
+          createdAt: user.authentication.createdAt,
+          expiresIn: user.authentication.expiresIn,
+          isActive: user.authentication.isActive,
         },
-      }
-    );
+        {
+          where: {
+            userId: userData.at(0).dataValues.userId,
+          },
+        }
+      );
   }
   async getByToken(token: string): Promise<User> {
-    const result = await this.authentication.findAll({
+    const result = (await this.authentication.findAll({
       where: {
         token,
       },
-    });
+    })) as any;
 
     if (!result.at(0)) return null as any;
 
-    const userData = await this.user.findAll({
+    const userData = (await this.user.findAll({
       where: {
-        userId: result.at(0)?.dataValues.userId,
+        userId: result.at(0).dataValues.userId,
       },
-    });
+    })) as any;
 
     return {
-      ...(userData.at(0)?.dataValues as any),
+      ...(userData.at(0).dataValues as any),
       authentication: {
-        code: result.at(0)?.dataValues.code,
-        codeExpiresIn: result.at(0)?.dataValues.codeExpiresIn,
-        token: result.at(0)?.dataValues.token,
-        createdAt: result.at(0)?.dataValues.createdAt,
-        expiresIn: result.at(0)?.dataValues.expiresIn,
-        isActive: result.at(0)?.dataValues.isActive,
+        code: result.at(0).dataValues.code,
+        codeExpiresIn: result.at(0).dataValues.codeExpiresIn,
+        token: result.at(0).dataValues.token,
+        createdAt: result.at(0).dataValues.createdAt,
+        expiresIn: result.at(0).dataValues.expiresIn,
+        isActive: result.at(0).dataValues.isActive,
       },
     };
   }
   async getByPasswordRecoveryToken(token: string): Promise<User> {
-    const result = await this.user.findAll({
+    const result = (await this.user.findAll({
       where: {
         passwordRecoveryToken: token,
       },
-    });
+    })) as any;
 
     if (!result.at(0)) return null as any;
-
-    const authenticate = await this.authentication.findAll({
+    const authenticate = (await this.authentication.findAll({
       where: {
-        userId: result.at(0)?.dataValues.userId,
+        userId: result.at(0).dataValues.userId,
       },
-    });
+    })) as any;
 
     return {
-      ...(result.at(0)?.dataValues as any),
+      ...result.at(0).dataValues,
       authentication: {
-        code: authenticate.at(0)?.dataValues.code,
-        codeExpiresIn: authenticate.at(0)?.dataValues.codeExpiresIn,
-        token: authenticate.at(0)?.dataValues.token,
-        createdAt: authenticate.at(0)?.dataValues.createdAt,
-        expiresIn: authenticate.at(0)?.dataValues.expiresIn,
-        isActive: authenticate.at(0)?.dataValues.isActive,
+        code: authenticate.at(0).dataValues.code,
+        codeExpiresIn: authenticate.at(0).dataValues.codeExpiresIn,
+        token: authenticate.at(0).dataValues.token,
+        createdAt: authenticate.at(0).dataValues.createdAt,
+        expiresIn: authenticate.at(0).dataValues.expiresIn,
+        isActive: authenticate.at(0).dataValues.isActive,
       },
     };
   }
@@ -155,22 +155,22 @@ export class UserRepositoryImpl implements UserRepository {
     });
 
     if (!result.at(0)) return null as any;
-
-    const userData = await this.user.findAll({
+    const authResult = result.at(0) as any;
+    const userData = (await this.user.findAll({
       where: {
-        userId: result.at(0)?.dataValues.userId,
+        userId: authResult.dataValues.userId,
       },
-    });
+    })) as any;
 
     return {
-      ...(userData.at(0)?.dataValues as any),
+      ...userData.at(0).dataValues,
       authentication: {
-        code: result.at(0)?.dataValues.code,
-        codeExpiresIn: result.at(0)?.dataValues.codeExpiresIn,
-        token: result.at(0)?.dataValues.token,
-        createdAt: result.at(0)?.dataValues.createdAt,
-        expiresIn: result.at(0)?.dataValues.expiresIn,
-        isActive: result.at(0)?.dataValues.isActive,
+        code: authResult.dataValues.code,
+        codeExpiresIn: authResult.dataValues.codeExpiresIn,
+        token: authResult.dataValues.token,
+        createdAt: authResult.dataValues.createdAt,
+        expiresIn: authResult.dataValues.expiresIn,
+        isActive: authResult.dataValues.isActive,
       },
     };
   }
