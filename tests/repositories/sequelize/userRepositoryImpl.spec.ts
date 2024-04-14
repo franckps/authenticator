@@ -224,6 +224,20 @@ describe("#UserRepositoryImpl", () => {
         }
       );
     });
+
+    test("should not call User.update and Authentication.update case User.findAll fail", async () => {
+      const { sut, userStub, authenticationStub } = makeSut();
+      const findAllSpy = jest.spyOn(userStub, "findAll");
+      const updateSpy = jest.spyOn(userStub, "update");
+      const updateAuthenticateSpy = jest.spyOn(authenticationStub, "update");
+      findAllSpy.mockReturnValue(Promise.resolve(null as any));
+      await sut.updateByUsername("any_username", {
+        ...userData,
+        authentication: authenticationData,
+      });
+      expect(updateSpy).not.toBeCalled();
+      expect(updateAuthenticateSpy).not.toBeCalled();
+    });
   });
 
   describe("#findByUsername", () => {
