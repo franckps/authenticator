@@ -23,6 +23,6 @@ export class NewPasswordDefinition {
     const authentication = this.createAuthentication.create();
     user.authentication = authentication;
     await this.userRepository.updateByUsername(user.username, user);
-    return authentication.code;
+    return callback + "?code=" + authentication.code;
   }
 }

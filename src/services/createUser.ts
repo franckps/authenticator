@@ -28,7 +28,7 @@ export class CreateUser {
     };
     const authentication = this.createAuthentication.create();
     newUser.authentication = authentication;
-    this.userRepository.create(newUser);
-    return authentication.code;
+    await this.userRepository.create(newUser);
+    return callback + "?code=" + authentication.code;
   }
 }

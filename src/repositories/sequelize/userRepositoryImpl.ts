@@ -73,6 +73,8 @@ export class UserRepositoryImpl implements UserRepository {
         password: user.password,
         email: user.email,
         image: user.image,
+        passwordRecoveryExpiresIn: user.passwordRecoveryExpiresIn,
+        passwordRecoveryToken: user.passwordRecoveryToken,
       },
       {
         where: {

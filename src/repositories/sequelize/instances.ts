@@ -4,7 +4,7 @@ import { User } from "../../models/User";
 
 const sequelize = new Sequelize({
   dialect: "sqlite",
-  storage: "database/database.sqlite",
+  storage: "tests/database/database.sqlite",
 });
 
 export const SequelizeUser: ModelDefined<User, User> = sequelize.define(
