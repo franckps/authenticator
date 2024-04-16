@@ -156,15 +156,9 @@ describe("#GetUserByToken", () => {
       image: "any_image",
       createdAt: "any_createdAt",
       updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
+      authentication: null,
+      passwordRecoveryToken: null,
+      passwordRecoveryExpiresIn: null,
     });
   });
 });
