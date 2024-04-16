@@ -151,14 +151,14 @@ describe("#GetUserByToken", () => {
     const user = await sut.execute("any_token");
     expect(user).toEqual({
       username: "any_username",
-      password: null,
+      password: undefined,
       email: "any_email",
       image: "any_image",
       createdAt: "any_createdAt",
       updatedAt: "any_updatedAt",
-      authentication: null,
-      passwordRecoveryToken: null,
-      passwordRecoveryExpiresIn: null,
+      authentication: undefined,
+      passwordRecoveryToken: undefined,
+      passwordRecoveryExpiresIn: undefined,
     });
   });
 });

@@ -94,7 +94,7 @@ describe("Integration", () => {
       expect(result.body.username).toEqual("any_username5");
       expect(result.body.email).toEqual("any_email");
       expect(result.body.image).toEqual("any_image");
-      expect(result.body.password).toBeNull();
+      expect(result.body.password).toBeUndefined();
     });
   });
   describe("Password recovery flow", () => {
