@@ -4,27 +4,27 @@
 
 - [ ] Create user service
   - [x] create service
-  - [ ] create method to encrypt password
-  - [ ] create repository
-  - [ ] create endpoint
-- [ ] Authenticate username and password
+  - [x] create method to encrypt password
+  - [x] create repository
+  - [x] create endpoint
+- [x] Authenticate username and password
   - [x] create service
-  - [ ] create method to compare encrypted password
-  - [ ] create repository
-  - [ ] create endpoint
+  - [x] create method to compare encrypted password
+  - [x] create repository
+  - [x] create endpoint
+- [x] Authorize an accessToken
+  - [x] create service
+  - [x] create method to check token validation
+  - [x] create repository
+  - [x] create endpoint
+- [x] Get User by accessToken
+  - [x] create service
+  - [x] create method to check token validation
+  - [x] create repository
+  - [x] create endpoint
 - [ ] Recover password
   - [x] create service
   - [ ] create method to recover by email
-  - [ ] create repository
-  - [ ] create endpoint
-- [ ] Authorize an accessToken
-  - [x] create service
-  - [ ] create method to check token validation
-  - [ ] create repository
-  - [ ] create endpoint
-- [ ] Get User by accessToken
-  - [x] create service
-  - [ ] create method to check token validation
-  - [ ] create repository
-  - [ ] create endpoint
+  - [x] create repository
+  - [x] create endpoint
 - [ ] Create an SDK to use this authenticator service
