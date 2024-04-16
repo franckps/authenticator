@@ -86,6 +86,16 @@ const makeSut = (): SutTypes => {
 };
 
 describe("#Authorize", () => {
+  test("Should fail case no token sent", async () => {
+    const { sut } = makeSut();
+    try {
+      await sut.execute();
+      expect(false).toBe(true);
+    } catch (err: any) {
+      expect(err).toBeInstanceOf(CustomError);
+      expect(err.message).toEqual("Unauthorized user");
+    }
+  });
   test("Should call repository correctly to get user by access token", async () => {
     const { sut, userRepositoryStub } = makeSut();
     const spyGetByToken = jest.spyOn(userRepositoryStub, "getByToken");

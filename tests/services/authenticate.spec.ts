@@ -191,6 +191,6 @@ describe("#Authenticate", () => {
       password: "any_password",
       callback: "any_callback",
     });
-    expect(resultCode).toEqual("any_code");
+    expect(resultCode).toEqual("any_callback?code=any_code");
   });
 });

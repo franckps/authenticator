@@ -189,6 +189,6 @@ describe("#CreateUser", () => {
   test("Should return code case authenticated", async () => {
     const { sut } = makeSut();
     const resultCode = await sut.execute(userData, "any_callback");
-    expect(resultCode).toEqual("any_code");
+    expect(resultCode).toEqual("any_callback?code=any_code");
   });
 });

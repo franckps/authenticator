@@ -210,6 +210,6 @@ describe("#NewPasswordDefinition", () => {
       "other_password",
       "any_callback"
     );
-    expect(resultCode).toEqual("any_code");
+    expect(resultCode).toEqual("any_callback?code=any_code");
   });
 });
