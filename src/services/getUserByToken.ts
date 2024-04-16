@@ -16,10 +16,10 @@ export class GetUserByToken {
       throw new CustomError("Unauthorized user");
     const isValid = this.tokenValidator.validateTokenData(user.authentication);
     if (!isValid) throw new CustomError("Unauthorized user");
-    user.password = null as any;
-    user.authentication = null as any;
-    user.passwordRecoveryExpiresIn = null as any;
-    user.passwordRecoveryToken = null as any;
+    user.password = undefined as any;
+    user.authentication = undefined as any;
+    user.passwordRecoveryExpiresIn = undefined as any;
+    user.passwordRecoveryToken = undefined as any;
 
     return user;
   }
