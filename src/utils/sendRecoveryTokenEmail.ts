@@ -10,7 +10,12 @@ export class SendRecoveryTokenEmail implements SendRecoveryToken {
     from: string;
   }) {
     this.mailConfig = {
-      service: config.service,
+      host: config.service,
+      port: 587,
+      tls: {
+        rejectUnauthorized: true,
+        minVersion: "TLSv1.2",
+      },
       auth: {
         user: config.authUser,
         pass: config.authPassword,
@@ -21,7 +26,12 @@ export class SendRecoveryTokenEmail implements SendRecoveryToken {
 
   private mailConfig:
     | {
-        service: string;
+        host: string;
+        port: number;
+        tls: {
+          rejectUnauthorized: boolean;
+          minVersion: string;
+        };
         auth: {
           user: string;
           pass: string;
