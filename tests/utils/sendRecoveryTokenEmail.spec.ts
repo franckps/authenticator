@@ -44,10 +44,15 @@ describe("#SendRecoveryTokenEmail", () => {
       "any_passwordRecoveryToken"
     );
     expect(spyCreateTransport).toBeCalledWith({
-      service: "any_service",
       auth: {
         user: "any_email",
         pass: "any_password",
+      },
+      host: "any_service",
+      port: 587,
+      tls: {
+        minVersion: "TLSv1.2",
+        rejectUnauthorized: true,
       },
     });
   });
