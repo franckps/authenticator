@@ -44,7 +44,7 @@ export class SendRecoveryTokenEmail implements SendRecoveryToken {
   sendRecovery(user: User, passwordRecoveryToken: string): Promise<void> {
     return new Promise((resolve, reject) => {
       console.log(createTransport);
-      const transporter = createTransport(this.mailConfig);
+      const transporter = createTransport(this.mailConfig as any);
       const mailOptions = {
         from: this.from,
         to: user.email,

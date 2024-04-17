@@ -16,7 +16,6 @@ import { NewPasswordDefinition } from "../services/newPasswordDefinition";
 import { RecoveryPassword } from "../services/recoveryPassword";
 import { PasswordRecoveryGenerateImpl } from "../utils/passwordRecoveryGenerateImpl";
 import { SendRecoveryTokenEmail } from "../utils/sendRecoveryTokenEmail";
-
 const userValidator = new UserValidator();
 const userRepository = new UserRepositoryImpl(
   SequelizeUser,
@@ -27,10 +26,10 @@ const createAuthentication = new CreateAuthenticationImpl();
 const tokenValidator = new TokenValidatorImpl();
 const passwordRecoveryGenerate = new PasswordRecoveryGenerateImpl();
 const sendRecoveryToken = new SendRecoveryTokenEmail({
-  service: "",
-  authUser: "",
-  authPassword: "",
-  from: "",
+  service: process.env.EMAIL_HOST as any,
+  authUser: process.env.EMAIL_USER as any,
+  authPassword: process.env.EMAIL_PASS as any,
+  from: process.env.EMAIL_FROM as any,
 });
 
 export const makeCreateUserService = (): CreateUser => {

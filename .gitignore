@@ -2,3 +2,5 @@ node_modules/
 dist/
 coverage/
 database/
+*.env
+!*example.env
