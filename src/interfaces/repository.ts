@@ -7,4 +7,5 @@ export interface UserRepository {
   getByToken(token: string): Promise<User>;
   getByPasswordRecoveryToken(token: string): Promise<User>;
   getByCode(token: string): Promise<User>;
+  getByEmailValidationToken(token: string): Promise<User>;
 }

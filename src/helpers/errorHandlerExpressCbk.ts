@@ -8,6 +8,7 @@ export const errorHandlerExpressCbk =
     try {
       await cbk(req, res, next);
     } catch (err: any) {
+      console.log(err);
       res.status(400);
       res.json({ message: err.message });
     }

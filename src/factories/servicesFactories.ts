@@ -1,9 +1,10 @@
+import { Sequelize } from "sequelize";
 import { UserValidator } from "../utils/userValidator";
 import { CreateUser } from "../services/createUser";
 import { UserRepositoryImpl } from "../repositories/sequelize/userRepositoryImpl";
 import {
-  SequelizeAuthentication,
-  SequelizeUser,
+  createSequelizeAuthenticationModel,
+  createSequelizeUserModel,
 } from "../repositories/sequelize/instances";
 import { PasswordEncryptBcrypt } from "../utils/passwordEncryptBcrypt";
 import { CreateAuthenticationImpl } from "../utils/createAuthenticationImpl";
@@ -16,10 +17,17 @@ import { NewPasswordDefinition } from "../services/newPasswordDefinition";
 import { RecoveryPassword } from "../services/recoveryPassword";
 import { PasswordRecoveryGenerateImpl } from "../utils/passwordRecoveryGenerateImpl";
 import { SendRecoveryTokenEmail } from "../utils/sendRecoveryTokenEmail";
+import { EmailVerificationImpl } from "../utils/emailVerificationImpl";
+import { EmailValidation } from "../services/emailValidation";
+console.log(process.env.SQLITE_DATABASE);
+const sequelize = new Sequelize({
+  dialect: "sqlite",
+  storage: process.env.SQLITE_DATABASE,
+});
 const userValidator = new UserValidator();
 const userRepository = new UserRepositoryImpl(
-  SequelizeUser,
-  SequelizeAuthentication
+  createSequelizeUserModel(sequelize),
+  createSequelizeAuthenticationModel(sequelize)
 );
 const passwordEncrypt = new PasswordEncryptBcrypt();
 const createAuthentication = new CreateAuthenticationImpl();
@@ -31,13 +39,21 @@ const sendRecoveryToken = new SendRecoveryTokenEmail({
   authPassword: process.env.EMAIL_PASS as any,
   from: process.env.EMAIL_FROM as any,
 });
+const emailVerificationImpl = new EmailVerificationImpl({
+  service: process.env.EMAIL_HOST as any,
+  authUser: process.env.EMAIL_USER as any,
+  authPassword: process.env.EMAIL_PASS as any,
+  from: process.env.EMAIL_FROM as any,
+});
 
 export const makeCreateUserService = (): CreateUser => {
   return new CreateUser(
     userValidator,
     userRepository,
     passwordEncrypt,
-    createAuthentication
+    createAuthentication,
+    passwordRecoveryGenerate,
+    emailVerificationImpl
   );
 };
 
@@ -75,4 +91,8 @@ export const makeRecoveryPasswordService = (): RecoveryPassword => {
     passwordRecoveryGenerate,
     sendRecoveryToken
   );
+};
+
+export const makeEmailValidationService = (): EmailValidation => {
+  return new EmailValidation(userRepository, createAuthentication);
 };

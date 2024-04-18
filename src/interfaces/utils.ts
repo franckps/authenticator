@@ -34,3 +34,11 @@ export interface SendRecoveryToken {
 export interface CodeValidator {
   validateCode(authentication: Authentication): boolean;
 }
+
+export interface EmailVerification {
+  verify(
+    user: User,
+    passwordRecoveryToken: string,
+    callback: string
+  ): Promise<void>;
+}

@@ -13,6 +13,34 @@ export class UserRepositoryImpl implements UserRepository {
     >
   ) {}
 
+  async getByEmailValidationToken(token: string): Promise<User> {
+    const result = (await this.user.findAll({
+      where: {
+        emailValidationToken: token,
+      },
+    })) as any;
+
+    if (!result.at(0)) return null as any;
+    const authenticate = (await this.authentication.findAll({
+      where: {
+        userId: result.at(0).dataValues.userId,
+      },
+    })) as any;
+
+    return {
+      ...result.at(0).dataValues,
+      authentication: {
+        code: authenticate.at(0).dataValues.code,
+        codeExpiresIn: authenticate.at(0).dataValues.codeExpiresIn,
+        token: authenticate.at(0).dataValues.token,
+        createdAt: authenticate.at(0).dataValues.createdAt,
+        updatedAt: authenticate.at(0).dataValues.updatedAt,
+        expiresIn: authenticate.at(0).dataValues.expiresIn,
+        isActive: authenticate.at(0).dataValues.isActive,
+      },
+    };
+  }
+
   async create(user: User): Promise<void> {
     user.userId = randomUUID();
     const userData = await this.user.create({
@@ -23,6 +51,9 @@ export class UserRepositoryImpl implements UserRepository {
       image: user.image,
       createdAt: user.createdAt,
       updatedAt: user.updatedAt,
+      emailValidationToken: user.emailValidationToken,
+      emailValidationExpiresIn: user.emailValidationExpiresIn,
+      isActive: user.isActive,
     });
     if (!userData || !userData.dataValues.userId)
       throw Error("Failure trying create user");
@@ -75,6 +106,9 @@ export class UserRepositoryImpl implements UserRepository {
         image: user.image,
         passwordRecoveryExpiresIn: user.passwordRecoveryExpiresIn,
         passwordRecoveryToken: user.passwordRecoveryToken,
+        emailValidationToken: user.emailValidationToken,
+        emailValidationExpiresIn: user.emailValidationExpiresIn,
+        isActive: user.isActive,
       },
       {
         where: {

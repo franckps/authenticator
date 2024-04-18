@@ -7,6 +7,7 @@ import {
   makeRecoveryPasswordService,
   makeNewPasswordDefinitionService,
   makeGetUserByTokenService,
+  makeEmailValidationService,
 } from "./factories/servicesFactories";
 import { errorHandlerExpressCbk } from "./helpers/errorHandlerExpressCbk";
 const app = express();
@@ -20,11 +21,27 @@ const authorizeService = makeAuthorizeService();
 const recoveryPasswordService = makeRecoveryPasswordService();
 const newPasswordDefinitionService = makeNewPasswordDefinitionService();
 const getUserByTokenService = makeGetUserByTokenService();
+const emailValidationService = makeEmailValidationService();
+
+app.get("/callback", async (req, res) => {
+  return res.json({ code: req.query.code });
+});
 
 app.post(
   "/api/v1/register",
   errorHandlerExpressCbk(async (req, res) => {
     const result = await createUserService.execute(req.body, req.body.callback);
+    return res.send();
+  })
+);
+
+app.get(
+  "/api/v1/register/validation/:validationToken",
+  errorHandlerExpressCbk(async (req, res) => {
+    const result = await emailValidationService.execute(
+      req.params.validationToken,
+      req.query.callback as any
+    );
     return res.redirect(result);
   })
 );

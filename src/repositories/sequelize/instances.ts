@@ -2,14 +2,10 @@ import { DataTypes, ModelDefined, Sequelize } from "sequelize";
 import { Authentication } from "../../models/Authentication";
 import { User } from "../../models/User";
 
-const sequelize = new Sequelize({
-  dialect: "sqlite",
-  storage: "tests/database/database.sqlite",
-});
-
-export const SequelizeUser: ModelDefined<User, User> = sequelize.define(
-  "User",
-  {
+export const createSequelizeUserModel = (
+  sequelize: Sequelize
+): ModelDefined<User, User> =>
+  sequelize.define("User", {
     userId: {
       type: DataTypes.STRING,
       allowNull: false,
@@ -48,39 +44,50 @@ export const SequelizeUser: ModelDefined<User, User> = sequelize.define(
       type: DataTypes.NUMBER,
       allowNull: true,
     },
-  }
-);
+    emailValidationToken: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    emailValidationExpiresIn: {
+      type: DataTypes.NUMBER,
+      allowNull: true,
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+  });
 
-export const SequelizeAuthentication: ModelDefined<
-  Authentication,
-  Authentication
-> = sequelize.define("Authentication", {
-  userId: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  code: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  codeExpiresIn: {
-    type: DataTypes.NUMBER,
-    allowNull: false,
-  },
-  token: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
-  createdAt: {
-    type: DataTypes.NOW,
-    allowNull: false,
-  },
-  expiresIn: {
-    type: DataTypes.NUMBER,
-    allowNull: false,
-  },
-  isActive: {
-    type: DataTypes.BOOLEAN,
-    allowNull: false,
-  },
-});
+export const createSequelizeAuthenticationModel = (
+  sequelize: Sequelize
+): ModelDefined<Authentication, Authentication> =>
+  sequelize.define("Authentication", {
+    userId: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    code: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    codeExpiresIn: {
+      type: DataTypes.NUMBER,
+      allowNull: false,
+    },
+    token: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.NOW,
+      allowNull: false,
+    },
+    expiresIn: {
+      type: DataTypes.NUMBER,
+      allowNull: false,
+    },
+    isActive: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+    },
+  });
