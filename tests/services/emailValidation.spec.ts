@@ -2,27 +2,17 @@ import { User } from "../../src/models/User";
 import { Authentication } from "../../src/models/Authentication";
 import { UserRepository } from "../../src/interfaces/repository";
 import { CustomError } from "../../src/utils/errors";
-import {
-  CreateAuthentication,
-  PasswordEncrypt,
-} from "../../src/interfaces/utils";
-import { NewPasswordDefinition } from "../../src/services/newPasswordDefinition";
+import { CreateAuthentication } from "../../src/interfaces/utils";
+import { EmailValidation } from "../../src/services/emailValidation";
 
 interface SutTypes {
-  sut: NewPasswordDefinition;
+  sut: EmailValidation;
   userRepositoryStub: UserRepository;
-  passwordEncryptStub: PasswordEncrypt;
   createAuthenticationStub: CreateAuthentication;
 }
 
 class UserRepositoryStub implements UserRepository {
   getByEmailValidationToken(token: string): Promise<User> {
-    throw new Error("Method not implemented.");
-  }
-  getByCode(token: string): Promise<User> {
-    throw new Error("Method not implemented.");
-  }
-  getByPasswordRecoveryToken(token: string): Promise<User> {
     return Promise.resolve({
       username: "any_username",
       password: "any_password",
@@ -40,6 +30,12 @@ class UserRepositoryStub implements UserRepository {
         isActive: true,
       },
     });
+  }
+  getByCode(token: string): Promise<User> {
+    throw new Error("Method not implemented.");
+  }
+  getByPasswordRecoveryToken(token: string): Promise<User> {
+    throw new Error("Method not implemented.");
   }
   getByToken(token: string): Promise<User> {
     throw new Error("Method not implemented.");
@@ -87,86 +83,52 @@ class CreateAuthenticationStub implements CreateAuthentication {
   }
 }
 
-class PasswordEncryptStub implements PasswordEncrypt {
-  encrypt(password: string): Promise<string> {
-    return Promise.resolve("any_encryptedPassword");
-  }
-}
-
 const makeSut = (): SutTypes => {
   const userRepositoryStub = new UserRepositoryStub();
-  const passwordEncryptStub = new PasswordEncryptStub();
   const createAuthenticationStub = new CreateAuthenticationStub();
-  const sut = new NewPasswordDefinition(
-    userRepositoryStub,
-    passwordEncryptStub,
-    createAuthenticationStub
-  );
+  const sut = new EmailValidation(userRepositoryStub, createAuthenticationStub);
 
   return {
     userRepositoryStub,
-    passwordEncryptStub,
     createAuthenticationStub,
     sut,
   };
 };
 
-describe("#NewPasswordDefinition", () => {
-  test("Should call repository correctly to get user by passwordRecoveryToken", async () => {
+describe("#EmailValidation", () => {
+  test("Should call repository correctly to get user by emailValidationToken", async () => {
     const { sut, userRepositoryStub } = makeSut();
-    const spyGetByPasswordRecoveryToken = jest.spyOn(
+    const spyGetByEmailValidationToken = jest.spyOn(
       userRepositoryStub,
-      "getByPasswordRecoveryToken"
+      "getByEmailValidationToken"
     );
-    await sut.execute(
-      "any_passwordRecoveryToken",
-      "other_password",
-      "any_callback"
-    );
-    expect(spyGetByPasswordRecoveryToken).toBeCalledWith(
-      "any_passwordRecoveryToken"
+    await sut.execute("any_emailValidationToken", "any_callback");
+    expect(spyGetByEmailValidationToken).toBeCalledWith(
+      "any_emailValidationToken"
     );
   });
   test("Should fail case user be not found", async () => {
     const { sut, userRepositoryStub } = makeSut();
-    const spyGetByPasswordRecoveryToken = jest.spyOn(
+    const spyGetByEmailValidationToken = jest.spyOn(
       userRepositoryStub,
-      "getByPasswordRecoveryToken"
+      "getByEmailValidationToken"
     );
-    spyGetByPasswordRecoveryToken.mockReturnValue(Promise.resolve(null as any));
+    spyGetByEmailValidationToken.mockReturnValue(Promise.resolve(null as any));
     try {
-      await sut.execute(
-        "any_passwordRecoveryToken",
-        "other_password",
-        "any_callback"
-      );
+      await sut.execute("any_emailValidationToken", "any_callback");
       expect(false).toBe(true);
     } catch (err: any) {
       expect(err).toBeInstanceOf(CustomError);
       expect(err.message).toEqual("Unauthorized user");
     }
   });
-  test("Should call the passwordEncrypt encrypt method correctly", async () => {
-    const { sut, passwordEncryptStub } = makeSut();
-    const spyEncrypt = jest.spyOn(passwordEncryptStub, "encrypt");
-    await sut.execute(
-      "any_passwordRecoveryToken",
-      "other_password",
-      "any_callback"
-    );
-    expect(spyEncrypt).toBeCalledWith("other_password");
-  });
   test("Should call the createAuthentication create method", async () => {
     const { sut, createAuthenticationStub } = makeSut();
     const spyCreate = jest.spyOn(createAuthenticationStub, "create");
-    await sut.execute(
-      "any_passwordRecoveryToken",
-      "other_password",
-      "any_callback"
-    );
+    await sut.execute("any_emailValidationToken", "any_callback");
     expect(spyCreate).toBeCalled();
   });
-  test("Should call repository correctly to update user password", async () => {
+  test("Should call repository correctly to update user is active", async () => {
     const { sut, createAuthenticationStub, userRepositoryStub } = makeSut();
 
     const spyCreate = jest.spyOn(createAuthenticationStub, "create");
@@ -183,18 +145,15 @@ describe("#NewPasswordDefinition", () => {
       userRepositoryStub,
       "updateByUsername"
     );
-    await sut.execute(
-      "any_passwordRecoveryToken",
-      "other_password",
-      "any_callback"
-    );
+    await sut.execute("any_emailValidationToken", "any_callback");
     expect(spyUpdateByUsername).toBeCalledWith("any_username", {
       username: "any_username",
-      password: "any_encryptedPassword",
+      password: "any_password",
       email: "any_email",
       image: "any_image",
       createdAt: "any_createdAt",
       updatedAt: "any_updatedAt",
+      isActive: true,
       authentication: {
         code: "other_code",
         codeExpiresIn: 2,
@@ -206,11 +165,10 @@ describe("#NewPasswordDefinition", () => {
       },
     });
   });
-  test("Should return code case authenticated", async () => {
+  test("Should return code case email validated", async () => {
     const { sut } = makeSut();
     const resultCode = await sut.execute(
-      "any_passwordRecoveryToken",
-      "other_password",
+      "any_emailValidationToken",
       "any_callback"
     );
     expect(resultCode).toEqual("any_callback?code=any_code");

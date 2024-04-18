@@ -485,4 +485,68 @@ describe("#UserRepositoryImpl", () => {
       });
     });
   });
+
+  describe("#getByEmailValidationToken", () => {
+    test("should call User.findAll and Authentication.findAll correctly", async () => {
+      const { sut, userStub, authenticationStub } = makeSut();
+      const findAllSpy = jest.spyOn(userStub, "findAll");
+      const findAllAuthenticationSpy = jest.spyOn(
+        authenticationStub,
+        "findAll"
+      );
+      await sut.getByEmailValidationToken("any_emailValidationToken");
+
+      expect(findAllSpy).toBeCalledWith({
+        where: {
+          emailValidationToken: "any_emailValidationToken",
+        },
+      });
+      expect(findAllAuthenticationSpy).toBeCalledWith({
+        where: {
+          userId: "any_userId",
+        },
+      });
+    });
+
+    test("should return null case User doesn't find", async () => {
+      const { sut, userStub } = makeSut();
+      const findAllSpy = jest.spyOn(userStub, "findAll");
+      findAllSpy.mockReturnValue(
+        Promise.resolve({
+          at: (ky) => null as any,
+          map: (elm: { dataValues: UserModel }) => [],
+        })
+      );
+
+      const result = await sut.getByEmailValidationToken(
+        "any_emailValidationToken"
+      );
+      expect(result).toBeNull();
+    });
+
+    test("should return user on success", async () => {
+      const { sut } = makeSut();
+      const result = await sut.getByEmailValidationToken(
+        "any_emailValidationToken"
+      );
+      expect(result).toEqual({
+        userId: "any_userId",
+        username: "any_username",
+        password: "any_password",
+        email: "any_email",
+        image: "any_image",
+        createdAt: "any_createdAt",
+        updatedAt: "any_updatedAt",
+        authentication: {
+          code: "any_code",
+          codeExpiresIn: 1,
+          token: "any_token",
+          createdAt: "any_createdAt",
+          updatedAt: "any_updatedAt",
+          expiresIn: 1,
+          isActive: true,
+        },
+      });
+    });
+  });
 });

@@ -3,9 +3,11 @@ import { Authentication } from "../../src/models/Authentication";
 import { UserRepository } from "../../src/interfaces/repository";
 import { CustomError } from "../../src/utils/errors";
 import {
-  CreateAuthentication,
+  EmailVerification,
   Validator,
   PasswordEncrypt,
+  PasswordRecoveryGenerate,
+  CreateAuthentication,
 } from "../../src/interfaces/utils";
 import { CreateUser } from "../../src/services/createUser";
 
@@ -24,9 +26,14 @@ interface SutTypes {
   userRepositoryStub: UserRepository;
   passwordEncryptStub: PasswordEncrypt;
   createAuthenticationStub: CreateAuthentication;
+  emailVerificationStub: EmailVerification;
+  passwordRecoveryGenerateStub: PasswordRecoveryGenerate;
 }
 
 class UserRepositoryStub implements UserRepository {
+  getByEmailValidationToken(token: string): Promise<User> {
+    throw new Error("Method not implemented.");
+  }
   getByCode(token: string): Promise<User> {
     throw new Error("Method not implemented.");
   }
@@ -55,6 +62,34 @@ class UserValidatorStub implements Validator<User> {
   }
 }
 
+class EmailVerificationStub implements EmailVerification {
+  verify(
+    user: User,
+    passwordRecoveryToken: string,
+    callback: string
+  ): Promise<void> {
+    return Promise.resolve();
+  }
+}
+
+class PasswordEncryptStub implements PasswordEncrypt {
+  encrypt(password: string): Promise<string> {
+    return Promise.resolve("any_encryptedPassword");
+  }
+}
+
+class PasswordRecoveryGenerateStub implements PasswordRecoveryGenerate {
+  generateRecovery(): {
+    passwordRecoveryToken: string;
+    passwordRecoveryExpiresIn: number;
+  } {
+    return {
+      passwordRecoveryToken: "any_emailValidationToken",
+      passwordRecoveryExpiresIn: 1,
+    };
+  }
+}
+
 class CreateAuthenticationStub implements CreateAuthentication {
   create(): Authentication {
     return {
@@ -69,22 +104,20 @@ class CreateAuthenticationStub implements CreateAuthentication {
   }
 }
 
-class PasswordEncryptStub implements PasswordEncrypt {
-  encrypt(password: string): Promise<string> {
-    return Promise.resolve("any_encryptedPassword");
-  }
-}
-
 const makeSut = (): SutTypes => {
   const userValidatorStub = new UserValidatorStub();
   const userRepositoryStub = new UserRepositoryStub();
   const passwordEncryptStub = new PasswordEncryptStub();
   const createAuthenticationStub = new CreateAuthenticationStub();
+  const emailVerificationStub = new EmailVerificationStub();
+  const passwordRecoveryGenerateStub = new PasswordRecoveryGenerateStub();
   const sut = new CreateUser(
     userValidatorStub,
     userRepositoryStub,
     passwordEncryptStub,
-    createAuthenticationStub
+    createAuthenticationStub,
+    passwordRecoveryGenerateStub,
+    emailVerificationStub
   );
 
   return {
@@ -93,6 +126,8 @@ const makeSut = (): SutTypes => {
     userRepositoryStub,
     passwordEncryptStub,
     createAuthenticationStub,
+    passwordRecoveryGenerateStub,
+    emailVerificationStub,
   };
 };
 
@@ -158,11 +193,34 @@ describe("#CreateUser", () => {
     await sut.execute(userData, "any_callback");
     expect(spyEncrypt).toBeCalledWith("any_password");
   });
+  test("Should call passwordRecoveryGenerate", async () => {
+    const { sut, passwordRecoveryGenerateStub } = makeSut();
+    const spyGenerateRecovery = jest.spyOn(
+      passwordRecoveryGenerateStub,
+      "generateRecovery"
+    );
+    await sut.execute(userData, "any_callback");
+    expect(spyGenerateRecovery).toBeCalled();
+  });
   test("Should call the createAuthentication create method", async () => {
     const { sut, createAuthenticationStub } = makeSut();
     const spyCreate = jest.spyOn(createAuthenticationStub, "create");
     await sut.execute(userData, "any_callback");
     expect(spyCreate).toBeCalled();
+  });
+  test("Should call the emailVerification verify method correctly", async () => {
+    const { sut, emailVerificationStub } = makeSut();
+    const spyVerify = jest.spyOn(emailVerificationStub, "verify");
+    await sut.execute(userData, "any_callback");
+    expect(spyVerify).toBeCalledWith(
+      {
+        username: "any_username",
+        email: "any_email",
+        image: "any_image",
+      },
+      "any_emailValidationToken",
+      "any_callback"
+    );
   });
   test("Should call repository correctly to create user", async () => {
     const { sut, userRepositoryStub } = makeSut();
@@ -173,8 +231,10 @@ describe("#CreateUser", () => {
       password: "any_encryptedPassword",
       email: "any_email",
       image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
+      createdAt: undefined,
+      updatedAt: undefined,
+      emailValidationToken: "any_emailValidationToken",
+      emailValidationExpiresIn: 1,
       authentication: {
         code: "any_code",
         codeExpiresIn: 1,
@@ -184,11 +244,11 @@ describe("#CreateUser", () => {
         expiresIn: 1,
         isActive: true,
       },
+      isActive: false,
     });
   });
-  test("Should return code case authenticated", async () => {
+  test("Should resolve case authenticated", async () => {
     const { sut } = makeSut();
-    const resultCode = await sut.execute(userData, "any_callback");
-    expect(resultCode).toEqual("any_callback?code=any_code");
+    await sut.execute(userData, "any_callback");
   });
 });

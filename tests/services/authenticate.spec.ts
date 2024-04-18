@@ -17,6 +17,9 @@ interface SutTypes {
 
 const makeSut = (): SutTypes => {
   class UserRepositoryStub implements UserRepository {
+    getByEmailValidationToken(token: string): Promise<User> {
+      throw new Error("Method not implemented.");
+    }
     getByCode(token: string): Promise<User> {
       throw new Error("Method not implemented.");
     }
@@ -38,6 +41,7 @@ const makeSut = (): SutTypes => {
         image: "any_image",
         createdAt: "any_createdAt",
         updatedAt: "any_updatedAt",
+        isActive: true,
         authentication: {
           code: "any_code",
           codeExpiresIn: 1,
@@ -119,6 +123,41 @@ describe("#Authenticate", () => {
       expect(err.message).toEqual("Invalid username or password");
     }
   });
+  test("Should fail if no user be not valid", async () => {
+    const { sut, userRepositoryStub } = makeSut();
+    const spyGetByUsername = jest.spyOn(userRepositoryStub, "getByUsername");
+    spyGetByUsername.mockReturnValue(
+      Promise.resolve({
+        username: "any_username",
+        password: "any_password",
+        email: "any_email",
+        image: "any_image",
+        createdAt: "any_createdAt",
+        updatedAt: "any_updatedAt",
+        isActive: false,
+        authentication: {
+          code: "any_code",
+          codeExpiresIn: 1,
+          token: "any_token",
+          createdAt: "any_createdAt",
+          updatedAt: "any_updatedAt",
+          expiresIn: 1,
+          isActive: true,
+        },
+      })
+    );
+    try {
+      await sut.execute({
+        username: "any_username",
+        password: "any_password",
+        callback: "any_callback",
+      });
+      expect(false).toBe(true);
+    } catch (err: any) {
+      expect(err).toBeInstanceOf(CustomError);
+      expect(err.message).toEqual("Invalid user");
+    }
+  });
   test("Should call password validation correctly", async () => {
     const { sut, passwordValidatorStub } = makeSut();
     const spyIsEqual = jest.spyOn(passwordValidatorStub, "isEqual");
@@ -173,6 +212,7 @@ describe("#Authenticate", () => {
       image: "any_image",
       createdAt: "any_createdAt",
       updatedAt: "any_updatedAt",
+      isActive: true,
       authentication: {
         code: "any_code",
         codeExpiresIn: 1,

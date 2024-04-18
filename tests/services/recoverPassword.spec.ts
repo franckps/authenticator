@@ -16,6 +16,9 @@ interface SutTypes {
 }
 
 class UserRepositoryStub implements UserRepository {
+  getByEmailValidationToken(token: string): Promise<User> {
+    throw new Error("Method not implemented.");
+  }
   getByCode(token: string): Promise<User> {
     throw new Error("Method not implemented.");
   }

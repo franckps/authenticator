@@ -1,21 +1,32 @@
+//import "dotenv/config";
 import request from "supertest";
 import app from "../../src/server";
 import { SendRecoveryTokenEmail } from "../../src/utils/sendRecoveryTokenEmail";
+import { EmailVerificationImpl } from "../../src/utils/emailVerificationImpl";
 
 const spySendRecovery = jest.spyOn(
   SendRecoveryTokenEmail.prototype,
   "sendRecovery"
 );
+const spyVerify = jest.spyOn(EmailVerificationImpl.prototype, "verify");
 
 let code: string = "";
 let token: string = "";
 let passwordRecoveryLink: string = "";
+let emailRecoveryLink: string = "";
 
 describe("Integration", () => {
   describe("Authorize flow", () => {
     test("Should create user correctly", async () => {
+      spyVerify.mockImplementation(
+        (user: any, token: string, callback: string) => {
+          emailRecoveryLink = token;
+          return Promise.resolve();
+        }
+      );
       const result = await request(app)
         .post("/api/v1/register")
+        .set("Accept", "application/json")
         .send({
           username: "any_username5",
           password: "any_encryptedPassword",
@@ -23,17 +34,21 @@ describe("Integration", () => {
           image: "any_image",
           createdAt: "any_createdAt",
           updatedAt: "any_updatedAt",
-          authentication: {
-            code: "any_code",
-            codeExpiresIn: 1,
-            token: "any_token",
-            createdAt: "any_createdAt",
-            expiresIn: 1,
-            isActive: true,
-          },
           callback: "/callback",
-        })
+        });
+      expect(result.status).toEqual(200);
+    });
+
+    test("Should activate email correctly", async () => {
+      const result = await request(app)
+        .get(
+          "/api/v1/register/validation/" +
+            emailRecoveryLink +
+            "?callback=/callback" +
+            code
+        )
         .set("Accept", "application/json");
+      code = result.header.location.replace("/callback?code=", "");
       expect(result.status).toEqual(302);
       expect(result.header.location).toMatch("/callback?code=");
     });
@@ -53,7 +68,6 @@ describe("Integration", () => {
     });
 
     test("Should get token correctly", async () => {
-      console.log({ code });
       const result = await request(app)
         .post("/api/v1/token")
         .set("Content-Type", "application/json")
@@ -62,7 +76,6 @@ describe("Integration", () => {
         })
         .set("Accept", "application/json");
       token = result.body.token;
-      console.log({ token });
       expect(result.status).toEqual(200);
       expect(result.body.token).not.toBeNull();
       expect(result.body.createdAt).not.toBeNull();
@@ -70,7 +83,6 @@ describe("Integration", () => {
     });
 
     test("Should authorize correctly", async () => {
-      console.log({ code });
       const result = await request(app)
         .post("/api/v1/auth")
         .set("Content-Type", "application/json")
@@ -111,7 +123,6 @@ describe("Integration", () => {
           username: "any_username5",
         })
         .set("Accept", "application/json");
-      console.log({ passwordRecoveryLink });
       expect(result.status).toEqual(200);
     });
 
