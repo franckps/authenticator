@@ -62,6 +62,10 @@ class UserRepositoryStub implements UserRepository {
         expiresIn: 1,
         isActive: true,
       },
+      passwordRecoveryToken: "any_passwordRecoveryToken",
+      passwordRecoveryExpiresIn: 1,
+      emailValidationToken: "any_emailValidationToken",
+      emailValidationExpiresIn: 1,
     });
   }
 
@@ -162,6 +166,8 @@ describe("#GetUserByToken", () => {
       authentication: undefined,
       passwordRecoveryToken: undefined,
       passwordRecoveryExpiresIn: undefined,
+      emailValidationToken: undefined,
+      emailValidationExpiresIn: undefined,
     });
   });
 });

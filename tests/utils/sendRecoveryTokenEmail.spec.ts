@@ -18,12 +18,15 @@ interface SutTypes {
 }
 
 const makeSut = (): SutTypes => {
-  const sut = new SendRecoveryTokenEmail({
-    service: "any_service",
-    authUser: "any_email",
-    authPassword: "any_password",
-    from: "any_email",
-  });
+  const sut = new SendRecoveryTokenEmail(
+    {
+      service: "any_service",
+      authUser: "any_email",
+      authPassword: "any_password",
+      from: "any_email",
+    },
+    "any_url"
+  );
 
   return { sut };
 };
@@ -74,7 +77,7 @@ describe("#SendRecoveryTokenEmail", () => {
         from: "any_email",
         to: "other_email",
         subject: "Password recovery",
-        text: "any_passwordRecoveryToken",
+        text: "any_urlany_passwordRecoveryToken",
       },
       expect.any(Function)
     );

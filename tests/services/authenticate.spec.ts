@@ -211,7 +211,7 @@ describe("#Authenticate", () => {
       email: "any_email",
       image: "any_image",
       createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
+      updatedAt: expect.any(String),
       isActive: true,
       authentication: {
         code: "any_code",

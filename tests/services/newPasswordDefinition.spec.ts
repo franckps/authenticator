@@ -194,7 +194,7 @@ describe("#NewPasswordDefinition", () => {
       email: "any_email",
       image: "any_image",
       createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
+      updatedAt: expect.any(String),
       authentication: {
         code: "other_code",
         codeExpiresIn: 2,

@@ -231,8 +231,8 @@ describe("#CreateUser", () => {
       password: "any_encryptedPassword",
       email: "any_email",
       image: "any_image",
-      createdAt: undefined,
-      updatedAt: undefined,
+      createdAt: expect.any(String),
+      updatedAt: expect.any(String),
       emailValidationToken: "any_emailValidationToken",
       emailValidationExpiresIn: 1,
       authentication: {
