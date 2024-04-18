@@ -10,6 +10,7 @@ export const createSequelizeUserModel = (
       type: DataTypes.STRING,
       allowNull: false,
       primaryKey: true,
+      unique: true,
     },
     username: {
       type: DataTypes.STRING,
@@ -23,6 +24,7 @@ export const createSequelizeUserModel = (
     email: {
       type: DataTypes.STRING,
       allowNull: true,
+      unique: true,
     },
     image: {
       type: DataTypes.STRING,

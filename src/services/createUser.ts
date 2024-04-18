@@ -30,10 +30,10 @@ export class CreateUser {
     );
     const newUser = {
       ...userData,
-      createdAt: undefined,
-      updatedAt: undefined,
       password: encryptedPassword,
       isActive: false,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
       authentication: this.createAuthentication.create(),
     } as User;
     const { passwordRecoveryToken, passwordRecoveryExpiresIn } =

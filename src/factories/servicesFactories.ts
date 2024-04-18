@@ -33,18 +33,24 @@ const passwordEncrypt = new PasswordEncryptBcrypt();
 const createAuthentication = new CreateAuthenticationImpl();
 const tokenValidator = new TokenValidatorImpl();
 const passwordRecoveryGenerate = new PasswordRecoveryGenerateImpl();
-const sendRecoveryToken = new SendRecoveryTokenEmail({
-  service: process.env.EMAIL_HOST as any,
-  authUser: process.env.EMAIL_USER as any,
-  authPassword: process.env.EMAIL_PASS as any,
-  from: process.env.EMAIL_FROM as any,
-});
-const emailVerificationImpl = new EmailVerificationImpl({
-  service: process.env.EMAIL_HOST as any,
-  authUser: process.env.EMAIL_USER as any,
-  authPassword: process.env.EMAIL_PASS as any,
-  from: process.env.EMAIL_FROM as any,
-});
+const sendRecoveryToken = new SendRecoveryTokenEmail(
+  {
+    service: process.env.EMAIL_HOST as any,
+    authUser: process.env.EMAIL_USER as any,
+    authPassword: process.env.EMAIL_PASS as any,
+    from: process.env.EMAIL_FROM as any,
+  },
+  process.env.BASE_URL + "/api/v1/password/"
+);
+const emailVerificationImpl = new EmailVerificationImpl(
+  {
+    service: process.env.EMAIL_HOST as any,
+    authUser: process.env.EMAIL_USER as any,
+    authPassword: process.env.EMAIL_PASS as any,
+    from: process.env.EMAIL_FROM as any,
+  },
+  process.env.BASE_URL + "/api/v1/register/validation/"
+);
 
 export const makeCreateUserService = (): CreateUser => {
   return new CreateUser(

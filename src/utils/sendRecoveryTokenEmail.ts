@@ -3,12 +3,15 @@ import { User } from "../models/User";
 import { SendRecoveryToken } from "../interfaces/utils";
 
 export class SendRecoveryTokenEmail implements SendRecoveryToken {
-  constructor(config: {
-    service: string;
-    authUser: string;
-    authPassword: string;
-    from: string;
-  }) {
+  constructor(
+    config: {
+      service: string;
+      authUser: string;
+      authPassword: string;
+      from: string;
+    },
+    serviceURL: string
+  ) {
     this.mailConfig = {
       host: config.service,
       port: 587,
@@ -22,6 +25,7 @@ export class SendRecoveryTokenEmail implements SendRecoveryToken {
       },
     };
     this.from = config.from;
+    this.serviceURL = serviceURL;
   }
 
   private mailConfig:
@@ -40,6 +44,7 @@ export class SendRecoveryTokenEmail implements SendRecoveryToken {
     | undefined;
   private from: string | undefined;
   private subject: string = "Password recovery";
+  private serviceURL: string = "";
 
   sendRecovery(user: User, passwordRecoveryToken: string): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -49,7 +54,7 @@ export class SendRecoveryTokenEmail implements SendRecoveryToken {
         from: this.from,
         to: user.email,
         subject: this.subject,
-        text: passwordRecoveryToken,
+        text: this.serviceURL + passwordRecoveryToken,
       };
       transporter.sendMail(mailOptions, (err, _) => {
         if (!!err) return reject(err);

@@ -28,6 +28,7 @@ export class Authenticate {
     if (!isValid) throw new CustomError("Invalid username or password");
     const authentication = this.createAuthentication.create();
     user.authentication = authentication;
+    user.updatedAt = new Date().toISOString();
     await this.userRepository.updateByUsername(username, user);
     return callback + "?code=" + authentication.code;
   }

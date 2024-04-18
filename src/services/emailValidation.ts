@@ -19,6 +19,7 @@ export class EmailValidation {
     const authentication = this.createAuthentication.create();
     user.authentication = authentication;
     user.isActive = true;
+    user.updatedAt = new Date().toISOString();
     await this.userRepository.updateByUsername(user.username as any, user);
     return callback + "?code=" + authentication.code;
   }

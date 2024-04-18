@@ -3,12 +3,15 @@ import { User } from "../models/User";
 import { EmailVerification } from "../interfaces/utils";
 
 export class EmailVerificationImpl implements EmailVerification {
-  constructor(config: {
-    service: string;
-    authUser: string;
-    authPassword: string;
-    from: string;
-  }) {
+  constructor(
+    config: {
+      service: string;
+      authUser: string;
+      authPassword: string;
+      from: string;
+    },
+    serviceURL: string
+  ) {
     this.mailConfig = {
       host: config.service,
       port: 587,
@@ -22,6 +25,7 @@ export class EmailVerificationImpl implements EmailVerification {
       },
     };
     this.from = config.from;
+    this.serviceURL = serviceURL;
   }
 
   private mailConfig:
@@ -40,6 +44,7 @@ export class EmailVerificationImpl implements EmailVerification {
     | undefined;
   private from: string | undefined;
   private subject: string = "Password recovery";
+  private serviceURL: string = "";
 
   verify(
     user: User,
@@ -47,13 +52,12 @@ export class EmailVerificationImpl implements EmailVerification {
     callback: string
   ): Promise<void> {
     return new Promise((resolve, reject) => {
-      console.log(createTransport);
       const transporter = createTransport(this.mailConfig as any);
       const mailOptions = {
         from: this.from,
         to: user.email,
         subject: this.subject,
-        text: passwordRecoveryToken + "?callback=" + callback,
+        text: this.serviceURL + passwordRecoveryToken + "?callback=" + callback,
       };
       transporter.sendMail(mailOptions, (err, _) => {
         if (!!err) return reject(err);

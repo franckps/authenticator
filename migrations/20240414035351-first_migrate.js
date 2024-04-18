@@ -8,6 +8,7 @@ module.exports = {
         type: Sequelize.DataTypes.STRING,
         allowNull: false,
         primaryKey: true,
+        unique: true,
       },
       username: {
         type: Sequelize.DataTypes.STRING,
@@ -21,6 +22,7 @@ module.exports = {
       email: {
         type: Sequelize.DataTypes.STRING,
         allowNull: true,
+        unique: true,
       },
       image: {
         type: Sequelize.DataTypes.STRING,
