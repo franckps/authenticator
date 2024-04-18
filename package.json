@@ -8,12 +8,12 @@
     "dev": "npx ts-node-dev src/index.ts",
     "start": "npm run build && node dist/src/index.js",
     "start-container": "npm run build && docker-compose up",
-    "test": "npm run test:db:init && jest --passWithNoTests --silent --noStackTrace --runInBand --no-cache",
+    "test": "npm run test:db:init && SQLITE_DATABASE=tests/database/database.sqlite jest --passWithNoTests --silent --noStackTrace --runInBand --no-cache",
     "test:verbose": "jest --passWithNoTests --watch --runInBand",
     "test:unit": "npm run test -- --watch -c jest-unit-config.js",
-    "test:integration": "npm run test:db:init && jest --passWithNoTests --runInBand -c jest-integration-config.js",
+    "test:integration": "npm run test:db:init && SQLITE_DATABASE=tests/database/database.sqlite jest --passWithNoTests --runInBand -c jest-integration-config.js",
     "test:staged": "npm run test -- --findRelatedTests",
-    "test:coverage": "npm run test:db:init && jest --passWithNoTests --silent --noStackTrace --no-cache --coverage",
+    "test:coverage": "npm run test:db:init && SQLITE_DATABASE=tests/database/database.sqlite jest --passWithNoTests --silent --noStackTrace --no-cache --coverage",
     "test:db:init": "sequelize db:migrate:undo:all --env test && sequelize db:migrate --env test"
   },
   "devDependencies": {

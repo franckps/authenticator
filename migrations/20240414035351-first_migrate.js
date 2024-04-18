@@ -11,12 +11,12 @@ module.exports = {
       },
       username: {
         type: Sequelize.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
         unique: true,
       },
       password: {
         type: Sequelize.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       email: {
         type: Sequelize.DataTypes.STRING,
@@ -41,6 +41,18 @@ module.exports = {
       passwordRecoveryExpiresIn: {
         type: Sequelize.DataTypes.NUMBER,
         allowNull: true,
+      },
+      emailValidationToken: {
+        type: Sequelize.DataTypes.STRING,
+        allowNull: true,
+      },
+      emailValidationExpiresIn: {
+        type: Sequelize.DataTypes.NUMBER,
+        allowNull: true,
+      },
+      isActive: {
+        type: Sequelize.DataTypes.BOOLEAN,
+        allowNull: false,
       },
     });
     await queryInterface.createTable("Authentications", {
