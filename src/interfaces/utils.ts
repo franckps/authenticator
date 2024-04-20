@@ -42,3 +42,7 @@ export interface EmailVerification {
     callback: string
   ): Promise<void>;
 }
+
+export interface InvalidateToken {
+  invalidate(authentication: Authentication): Authentication;
+}
