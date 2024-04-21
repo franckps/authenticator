@@ -4,6 +4,11 @@ import { UserRepository } from "../../src/interfaces/repository";
 import { CustomError } from "../../src/utils/errors";
 import { TokenValidator } from "../../src/interfaces/utils";
 import { GetUserByToken } from "../../src/services/getUserByToken";
+import {
+  createAuthenticationMockedModel,
+  createUserMockedModel,
+  createUserWithAuthenticationMockedModel,
+} from "../factories/models";
 
 interface SutTypes {
   sut: GetUserByToken;
@@ -26,47 +31,11 @@ class UserRepositoryStub implements UserRepository {
   }
 
   getByUsername(username: string): Promise<User> {
-    return Promise.resolve({
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-    });
+    return Promise.resolve(createUserWithAuthenticationMockedModel());
   }
 
   getByToken(token: string): Promise<User> {
-    return Promise.resolve({
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-      passwordRecoveryToken: "any_passwordRecoveryToken",
-      passwordRecoveryExpiresIn: 1,
-      emailValidationToken: "any_emailValidationToken",
-      emailValidationExpiresIn: 1,
-    });
+    return Promise.resolve(createUserWithAuthenticationMockedModel());
   }
 
   updateByUsername(username: string, user: User): Promise<void> {
@@ -128,15 +97,9 @@ describe("#GetUserByToken", () => {
       "validateTokenData"
     );
     await sut.execute("any_token");
-    expect(spyValidateTokenData).toBeCalledWith({
-      code: "any_code",
-      codeExpiresIn: 1,
-      token: "any_token",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      expiresIn: 1,
-      isActive: true,
-    });
+    expect(spyValidateTokenData).toBeCalledWith(
+      createAuthenticationMockedModel()
+    );
   });
   test("Should fail case token be invalid", async () => {
     const { sut, tokenValidatorStub } = makeSut();
@@ -157,12 +120,8 @@ describe("#GetUserByToken", () => {
     const { sut } = makeSut();
     const user = await sut.execute("any_token");
     expect(user).toEqual({
-      username: "any_username",
+      ...createUserMockedModel(),
       password: undefined,
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
       authentication: undefined,
       passwordRecoveryToken: undefined,
       passwordRecoveryExpiresIn: undefined,
