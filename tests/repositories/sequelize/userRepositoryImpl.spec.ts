@@ -1,26 +1,16 @@
 import { User as UserModel } from "../../../src/models/User";
 import { Authentication as AuthenticationModel } from "../../../src/models/Authentication";
 import { UserRepositoryImpl } from "../../../src/repositories/sequelize/userRepositoryImpl";
+import {
+  createAuthenticationMockedModel,
+  createUserMockedModel,
+  createUserWithAuthenticationMockedModel,
+} from "../../factories/models";
 
-const userData: UserModel = {
-  userId: "any_userId",
-  username: "any_username",
-  password: "any_password",
-  email: "any_email",
-  image: "any_image",
-  createdAt: "any_createdAt",
-  updatedAt: "any_updatedAt",
-};
+const userData: UserModel = createUserMockedModel();
 
-const authenticationData: AuthenticationModel = {
-  code: "any_code",
-  codeExpiresIn: 1,
-  token: "any_token",
-  createdAt: "any_createdAt",
-  updatedAt: "any_updatedAt",
-  expiresIn: 1,
-  isActive: true,
-};
+const authenticationData: AuthenticationModel =
+  createAuthenticationMockedModel();
 
 interface User {
   create(model: UserModel): Promise<{ dataValues: UserModel }>;
@@ -281,24 +271,7 @@ describe("#UserRepositoryImpl", () => {
     test("should return user on success", async () => {
       const { sut } = makeSut();
       const result = await sut.getByUsername("any_username");
-      expect(result).toEqual({
-        userId: "any_userId",
-        username: "any_username",
-        password: "any_password",
-        email: "any_email",
-        image: "any_image",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        authentication: {
-          code: "any_code",
-          codeExpiresIn: 1,
-          token: "any_token",
-          createdAt: "any_createdAt",
-          updatedAt: "any_updatedAt",
-          expiresIn: 1,
-          isActive: true,
-        },
-      });
+      expect(result).toEqual(createUserWithAuthenticationMockedModel());
     });
   });
 
@@ -345,24 +318,7 @@ describe("#UserRepositoryImpl", () => {
       const result = await sut.getByPasswordRecoveryToken(
         "any_passwordRecoveryToken"
       );
-      expect(result).toEqual({
-        userId: "any_userId",
-        username: "any_username",
-        password: "any_password",
-        email: "any_email",
-        image: "any_image",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        authentication: {
-          code: "any_code",
-          codeExpiresIn: 1,
-          token: "any_token",
-          createdAt: "any_createdAt",
-          updatedAt: "any_updatedAt",
-          expiresIn: 1,
-          isActive: true,
-        },
-      });
+      expect(result).toEqual(createUserWithAuthenticationMockedModel());
     });
   });
 
@@ -405,24 +361,7 @@ describe("#UserRepositoryImpl", () => {
     test("should return user on success", async () => {
       const { sut } = makeSut();
       const result = await sut.getByCode("any_code");
-      expect(result).toEqual({
-        userId: "any_userId",
-        username: "any_username",
-        password: "any_password",
-        email: "any_email",
-        image: "any_image",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        authentication: {
-          code: "any_code",
-          codeExpiresIn: 1,
-          token: "any_token",
-          createdAt: "any_createdAt",
-          updatedAt: "any_updatedAt",
-          expiresIn: 1,
-          isActive: true,
-        },
-      });
+      expect(result).toEqual(createUserWithAuthenticationMockedModel());
     });
   });
 
@@ -465,24 +404,7 @@ describe("#UserRepositoryImpl", () => {
     test("should return user on success", async () => {
       const { sut } = makeSut();
       const result = await sut.getByToken("any_token");
-      expect(result).toEqual({
-        userId: "any_userId",
-        username: "any_username",
-        password: "any_password",
-        email: "any_email",
-        image: "any_image",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        authentication: {
-          code: "any_code",
-          codeExpiresIn: 1,
-          token: "any_token",
-          createdAt: "any_createdAt",
-          updatedAt: "any_updatedAt",
-          expiresIn: 1,
-          isActive: true,
-        },
-      });
+      expect(result).toEqual(createUserWithAuthenticationMockedModel());
     });
   });
 
@@ -529,24 +451,7 @@ describe("#UserRepositoryImpl", () => {
       const result = await sut.getByEmailValidationToken(
         "any_emailValidationToken"
       );
-      expect(result).toEqual({
-        userId: "any_userId",
-        username: "any_username",
-        password: "any_password",
-        email: "any_email",
-        image: "any_image",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        authentication: {
-          code: "any_code",
-          codeExpiresIn: 1,
-          token: "any_token",
-          createdAt: "any_createdAt",
-          updatedAt: "any_updatedAt",
-          expiresIn: 1,
-          isActive: true,
-        },
-      });
+      expect(result).toEqual(createUserWithAuthenticationMockedModel());
     });
   });
 });
