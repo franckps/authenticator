@@ -4,6 +4,10 @@ import { UserRepository } from "../../src/interfaces/repository";
 import { CustomError } from "../../src/utils/errors";
 import { CodeValidator } from "../../src/interfaces/utils";
 import { GetTokenByCode } from "../../src/services/getTokenByCode";
+import {
+  createAuthenticationMockedModel,
+  createUserWithAuthenticationMockedModel,
+} from "../factories/models";
 
 interface SutTypes {
   sut: GetTokenByCode;
@@ -16,23 +20,7 @@ class UserRepositoryStub implements UserRepository {
     throw new Error("Method not implemented.");
   }
   getByCode(token: string): Promise<User> {
-    return Promise.resolve({
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-    });
+    return Promise.resolve(createUserWithAuthenticationMockedModel());
   }
   getByPasswordRecoveryToken(token: string): Promise<User> {
     throw new Error("Method not implemented.");
@@ -45,23 +33,7 @@ class UserRepositoryStub implements UserRepository {
   }
 
   getByUsername(username: string): Promise<User> {
-    return Promise.resolve({
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-    });
+    return Promise.resolve(createUserWithAuthenticationMockedModel());
   }
 
   updateByUsername(username: string, user: User): Promise<void> {
@@ -110,15 +82,7 @@ describe("GetTokenByCode", () => {
     const { sut, codeValidatorStub } = makeSut();
     const spyValidateCode = jest.spyOn(codeValidatorStub, "validateCode");
     await sut.execute("any_code");
-    expect(spyValidateCode).toBeCalledWith({
-      code: "any_code",
-      codeExpiresIn: 1,
-      token: "any_token",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      expiresIn: 1,
-      isActive: true,
-    });
+    expect(spyValidateCode).toBeCalledWith(createAuthenticationMockedModel());
   });
   test("Should fail case code be not valid", async () => {
     const { sut, codeValidatorStub } = makeSut();
