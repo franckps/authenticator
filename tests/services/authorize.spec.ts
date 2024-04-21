@@ -4,6 +4,11 @@ import { UserRepository } from "../../src/interfaces/repository";
 import { CustomError } from "../../src/utils/errors";
 import { TokenValidator } from "../../src/interfaces/utils";
 import { Authorize } from "../../src/services/authorize";
+import {
+  createAuthenticationMockedModel,
+  createUserMockedModel,
+  createUserWithAuthenticationMockedModel,
+} from "../factories/models";
 
 interface SutTypes {
   sut: Authorize;
@@ -26,43 +31,11 @@ class UserRepositoryStub implements UserRepository {
   }
 
   getByUsername(username: string): Promise<User> {
-    return Promise.resolve({
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-    });
+    return Promise.resolve(createUserWithAuthenticationMockedModel());
   }
 
   getByToken(token: string): Promise<User> {
-    return Promise.resolve({
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-    });
+    return Promise.resolve(createUserWithAuthenticationMockedModel());
   }
 
   updateByUsername(username: string, user: User): Promise<void> {
@@ -120,16 +93,7 @@ describe("#Authorize", () => {
   test("Should fail case authentication be not found", async () => {
     const { sut, userRepositoryStub } = makeSut();
     const spyGetByToken = jest.spyOn(userRepositoryStub, "getByToken");
-    spyGetByToken.mockReturnValue(
-      Promise.resolve({
-        username: "any_username",
-        password: "any_password",
-        email: "any_email",
-        image: "any_image",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-      })
-    );
+    spyGetByToken.mockReturnValue(Promise.resolve(createUserMockedModel()));
     try {
       await sut.execute("any_token");
       expect(false).toBe(true);
@@ -145,15 +109,9 @@ describe("#Authorize", () => {
       "validateTokenData"
     );
     await sut.execute("any_token");
-    expect(spyValidateTokenData).toBeCalledWith({
-      code: "any_code",
-      codeExpiresIn: 1,
-      token: "any_token",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      expiresIn: 1,
-      isActive: true,
-    });
+    expect(spyValidateTokenData).toBeCalledWith(
+      createAuthenticationMockedModel()
+    );
   });
   test("Should fail case token be invalid", async () => {
     const { sut, tokenValidatorStub } = makeSut();
