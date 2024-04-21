@@ -7,6 +7,12 @@ import {
   PasswordEncrypt,
 } from "../../src/interfaces/utils";
 import { NewPasswordDefinition } from "../../src/services/newPasswordDefinition";
+import {
+  createAuthenticationMockedModel,
+  createOtherAuthenticationMockedModel,
+  createUserMockedModel,
+  createUserWithAuthenticationMockedModel,
+} from "../factories/models";
 
 interface SutTypes {
   sut: NewPasswordDefinition;
@@ -23,23 +29,7 @@ class UserRepositoryStub implements UserRepository {
     throw new Error("Method not implemented.");
   }
   getByPasswordRecoveryToken(token: string): Promise<User> {
-    return Promise.resolve({
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-    });
+    return Promise.resolve(createUserWithAuthenticationMockedModel());
   }
   getByToken(token: string): Promise<User> {
     throw new Error("Method not implemented.");
@@ -49,23 +39,7 @@ class UserRepositoryStub implements UserRepository {
   }
 
   getByUsername(username: string): Promise<User> {
-    return Promise.resolve({
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-    });
+    return Promise.resolve(createUserWithAuthenticationMockedModel());
   }
 
   updateByUsername(username: string, user: User): Promise<void> {
@@ -75,15 +49,7 @@ class UserRepositoryStub implements UserRepository {
 
 class CreateAuthenticationStub implements CreateAuthentication {
   create(): Authentication {
-    return {
-      code: "any_code",
-      codeExpiresIn: 1,
-      token: "any_token",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      expiresIn: 1,
-      isActive: true,
-    };
+    return createAuthenticationMockedModel();
   }
 }
 
@@ -170,15 +136,7 @@ describe("#NewPasswordDefinition", () => {
     const { sut, createAuthenticationStub, userRepositoryStub } = makeSut();
 
     const spyCreate = jest.spyOn(createAuthenticationStub, "create");
-    spyCreate.mockReturnValue({
-      code: "other_code",
-      codeExpiresIn: 2,
-      token: "other_token",
-      createdAt: "other_createdAt",
-      updatedAt: "other_updatedAt",
-      expiresIn: 2,
-      isActive: true,
-    });
+    spyCreate.mockReturnValue(createOtherAuthenticationMockedModel());
     const spyUpdateByUsername = jest.spyOn(
       userRepositoryStub,
       "updateByUsername"
@@ -189,21 +147,10 @@ describe("#NewPasswordDefinition", () => {
       "any_callback"
     );
     expect(spyUpdateByUsername).toBeCalledWith("any_username", {
-      username: "any_username",
-      password: "any_encryptedPassword",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
+      ...createUserMockedModel(),
       updatedAt: expect.any(String),
-      authentication: {
-        code: "other_code",
-        codeExpiresIn: 2,
-        token: "other_token",
-        createdAt: "other_createdAt",
-        updatedAt: "other_updatedAt",
-        expiresIn: 2,
-        isActive: true,
-      },
+      password: "any_encryptedPassword",
+      authentication: createOtherAuthenticationMockedModel(),
     });
   });
   test("Should return code case authenticated", async () => {
