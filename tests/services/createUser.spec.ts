@@ -10,15 +10,13 @@ import {
   CreateAuthentication,
 } from "../../src/interfaces/utils";
 import { CreateUser } from "../../src/services/createUser";
+import {
+  createAuthenticationMockedModel,
+  createUserMockedModel,
+  createUserWithAuthenticationMockedModel,
+} from "../factories/models";
 
-const userData: User = {
-  username: "any_username",
-  password: "any_password",
-  email: "any_email",
-  image: "any_image",
-  createdAt: "any_createdAt",
-  updatedAt: "any_updatedAt",
-};
+const userData: User = createUserMockedModel();
 
 interface SutTypes {
   sut: CreateUser;
@@ -92,15 +90,7 @@ class PasswordRecoveryGenerateStub implements PasswordRecoveryGenerate {
 
 class CreateAuthenticationStub implements CreateAuthentication {
   create(): Authentication {
-    return {
-      code: "any_code",
-      codeExpiresIn: 1,
-      token: "any_token",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      expiresIn: 1,
-      isActive: true,
-    };
+    return createAuthenticationMockedModel();
   }
 }
 
@@ -161,23 +151,7 @@ describe("#CreateUser", () => {
     const { sut, userRepositoryStub } = makeSut();
     const spyGetByUsername = jest.spyOn(userRepositoryStub, "getByUsername");
     spyGetByUsername.mockReturnValue(
-      Promise.resolve({
-        username: "any_username",
-        password: "any_password",
-        email: "any_email",
-        image: "any_image",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        authentication: {
-          code: "any_code",
-          codeExpiresIn: 1,
-          token: "any_token",
-          createdAt: "any_createdAt",
-          updatedAt: "any_updatedAt",
-          expiresIn: 1,
-          isActive: true,
-        },
-      })
+      Promise.resolve(createUserWithAuthenticationMockedModel())
     );
     try {
       await sut.execute(userData, "any_callback");
@@ -227,23 +201,10 @@ describe("#CreateUser", () => {
     const spyCreate = jest.spyOn(userRepositoryStub, "create");
     await sut.execute(userData, "any_callback");
     expect(spyCreate).toBeCalledWith({
-      username: "any_username",
-      password: "any_encryptedPassword",
-      email: "any_email",
-      image: "any_image",
+      ...createUserWithAuthenticationMockedModel(),
       createdAt: expect.any(String),
       updatedAt: expect.any(String),
-      emailValidationToken: "any_emailValidationToken",
-      emailValidationExpiresIn: 1,
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
+      password: "any_encryptedPassword",
       isActive: false,
     });
   });

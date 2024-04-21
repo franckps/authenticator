@@ -30,6 +30,8 @@ export const createUserMockedModel = (isActive: boolean = true): User => ({
   createdAt: "any_createdAt",
   updatedAt: "any_updatedAt",
   isActive,
+  emailValidationExpiresIn: 1,
+  emailValidationToken: "any_emailValidationToken",
 });
 
 export const createOtherUserMockedModel = (): User => ({
@@ -41,6 +43,8 @@ export const createOtherUserMockedModel = (): User => ({
   createdAt: "any_createdAt",
   updatedAt: "any_updatedAt",
   isActive: true,
+  emailValidationExpiresIn: 1,
+  emailValidationToken: "other_emailValidationToken",
 });
 
 export const createUserWithAuthenticationMockedModel = (
