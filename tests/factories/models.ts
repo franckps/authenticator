@@ -21,7 +21,7 @@ export const createOtherAuthenticationMockedModel = (): Authentication => ({
   isActive: true,
 });
 
-export const createUserMockedModel = (): User => ({
+export const createUserMockedModel = (isActive: boolean = true): User => ({
   userId: "any_userId",
   username: "any_username",
   password: "any_password",
@@ -29,6 +29,7 @@ export const createUserMockedModel = (): User => ({
   image: "any_image",
   createdAt: "any_createdAt",
   updatedAt: "any_updatedAt",
+  isActive,
 });
 
 export const createOtherUserMockedModel = (): User => ({
@@ -39,9 +40,12 @@ export const createOtherUserMockedModel = (): User => ({
   image: "any_image",
   createdAt: "any_createdAt",
   updatedAt: "any_updatedAt",
+  isActive: true,
 });
 
-export const createUserWithAuthenticationMockedModel = (): User => ({
-  ...createUserMockedModel(),
+export const createUserWithAuthenticationMockedModel = (
+  isValid: boolean = true
+): User => ({
+  ...createUserMockedModel(isValid),
   authentication: createAuthenticationMockedModel(),
 });

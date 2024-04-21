@@ -192,6 +192,11 @@ describe("#UserRepositoryImpl", () => {
           password: userData.password,
           email: userData.email,
           image: userData.image,
+          emailValidationExpiresIn: userData.emailValidationExpiresIn,
+          emailValidationToken: userData.emailValidationToken,
+          isActive: userData.isActive,
+          passwordRecoveryExpiresIn: userData.passwordRecoveryExpiresIn,
+          passwordRecoveryToken: userData.passwordRecoveryToken,
         },
         {
           where: {

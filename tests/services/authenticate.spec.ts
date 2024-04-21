@@ -7,6 +7,10 @@ import {
   PasswordValidator,
 } from "../../src/interfaces/utils";
 import { Authenticate } from "../../src/services/authenticate";
+import {
+  createAuthenticationMockedModel,
+  createUserWithAuthenticationMockedModel,
+} from "../factories/models";
 
 interface SutTypes {
   sut: Authenticate;
@@ -34,24 +38,7 @@ const makeSut = (): SutTypes => {
     }
 
     getByUsername(username: string): Promise<User> {
-      return Promise.resolve({
-        username: "any_username",
-        password: "any_password",
-        email: "any_email",
-        image: "any_image",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        isActive: true,
-        authentication: {
-          code: "any_code",
-          codeExpiresIn: 1,
-          token: "any_token",
-          createdAt: "any_createdAt",
-          updatedAt: "any_updatedAt",
-          expiresIn: 1,
-          isActive: true,
-        },
-      });
+      return Promise.resolve(createUserWithAuthenticationMockedModel());
     }
 
     updateByUsername(username: string, user: User): Promise<void> {
@@ -67,15 +54,7 @@ const makeSut = (): SutTypes => {
 
   class CreateAuthenticationStub implements CreateAuthentication {
     create(): Authentication {
-      return {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      };
+      return createAuthenticationMockedModel();
     }
   }
 
@@ -127,24 +106,7 @@ describe("#Authenticate", () => {
     const { sut, userRepositoryStub } = makeSut();
     const spyGetByUsername = jest.spyOn(userRepositoryStub, "getByUsername");
     spyGetByUsername.mockReturnValue(
-      Promise.resolve({
-        username: "any_username",
-        password: "any_password",
-        email: "any_email",
-        image: "any_image",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        isActive: false,
-        authentication: {
-          code: "any_code",
-          codeExpiresIn: 1,
-          token: "any_token",
-          createdAt: "any_createdAt",
-          updatedAt: "any_updatedAt",
-          expiresIn: 1,
-          isActive: true,
-        },
-      })
+      Promise.resolve(createUserWithAuthenticationMockedModel(false))
     );
     try {
       await sut.execute({
@@ -206,22 +168,8 @@ describe("#Authenticate", () => {
       callback: "any_callback",
     });
     expect(spyUpdateByUsername).toBeCalledWith("any_username", {
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
+      ...createUserWithAuthenticationMockedModel(),
       updatedAt: expect.any(String),
-      isActive: true,
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
     });
   });
   test("Should return the code", async () => {
