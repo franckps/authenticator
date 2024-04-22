@@ -19,6 +19,8 @@ import { PasswordRecoveryGenerateImpl } from "../utils/passwordRecoveryGenerateI
 import { SendRecoveryTokenEmail } from "../utils/sendRecoveryTokenEmail";
 import { EmailVerificationImpl } from "../utils/emailVerificationImpl";
 import { EmailValidation } from "../services/emailValidation";
+import { RemoveAuthentication } from "../services/removeAuthentication";
+import { InvalidateTokenImpl } from "../utils/invalidateTokenImpl";
 console.log(process.env.SQLITE_DATABASE);
 const sequelize = new Sequelize({
   dialect: "sqlite",
@@ -33,6 +35,7 @@ const passwordEncrypt = new PasswordEncryptBcrypt();
 const createAuthentication = new CreateAuthenticationImpl();
 const tokenValidator = new TokenValidatorImpl();
 const passwordRecoveryGenerate = new PasswordRecoveryGenerateImpl();
+const invalidateToken = new InvalidateTokenImpl();
 const sendRecoveryToken = new SendRecoveryTokenEmail(
   {
     service: process.env.EMAIL_HOST as any,
@@ -101,4 +104,8 @@ export const makeRecoveryPasswordService = (): RecoveryPassword => {
 
 export const makeEmailValidationService = (): EmailValidation => {
   return new EmailValidation(userRepository, createAuthentication);
+};
+
+export const makeRemoveAuthentication = (): RemoveAuthentication => {
+  return new RemoveAuthentication(userRepository, invalidateToken);
 };
