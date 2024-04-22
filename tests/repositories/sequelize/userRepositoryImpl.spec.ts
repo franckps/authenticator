@@ -6,6 +6,7 @@ import {
   createUserMockedModel,
   createUserWithAuthenticationMockedModel,
 } from "../../factories/models";
+import { string } from "zod";
 
 const userData: UserModel = createUserMockedModel();
 
@@ -150,7 +151,15 @@ describe("#UserRepositoryImpl", () => {
       await sut.create({ ...userData, authentication: authenticationData });
 
       expect(createSpy).toBeCalledWith({
-        ...userData,
+        emailValidationExpiresIn: userData.emailValidationExpiresIn,
+        emailValidationToken: userData.emailValidationToken,
+        image: userData.image,
+        isActive: userData.isActive,
+        password: userData.password,
+        updatedAt: userData.updatedAt,
+        createdAt: userData.createdAt,
+        username: userData.username,
+        email: userData.email,
         userId: expect.any(String),
       });
       expect(createAuthenticateSpy).toBeCalledWith({

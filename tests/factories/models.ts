@@ -32,6 +32,8 @@ export const createUserMockedModel = (isActive: boolean = true): User => ({
   isActive,
   emailValidationExpiresIn: 1,
   emailValidationToken: "any_emailValidationToken",
+  passwordRecoveryExpiresIn: 1,
+  passwordRecoveryToken: "any_passwordRecoveryToken",
 });
 
 export const createOtherUserMockedModel = (): User => ({
@@ -45,6 +47,8 @@ export const createOtherUserMockedModel = (): User => ({
   isActive: true,
   emailValidationExpiresIn: 1,
   emailValidationToken: "other_emailValidationToken",
+  passwordRecoveryExpiresIn: 1,
+  passwordRecoveryToken: "other_passwordRecoveryToken",
 });
 
 export const createUserWithAuthenticationMockedModel = (

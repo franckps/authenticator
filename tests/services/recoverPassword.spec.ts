@@ -7,6 +7,7 @@ import {
   SendRecoveryToken,
 } from "../../src/interfaces/utils";
 import { RecoveryPassword } from "../../src/services/recoveryPassword";
+import { createUserWithAuthenticationMockedModel } from "../factories/models";
 
 interface SutTypes {
   sut: RecoveryPassword;
@@ -23,23 +24,7 @@ class UserRepositoryStub implements UserRepository {
     throw new Error("Method not implemented.");
   }
   getByPasswordRecoveryToken(token: string): Promise<User> {
-    return Promise.resolve({
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-    });
+    return Promise.resolve(createUserWithAuthenticationMockedModel());
   }
   getByToken(token: string): Promise<User> {
     throw new Error("Method not implemented.");
@@ -49,23 +34,7 @@ class UserRepositoryStub implements UserRepository {
   }
 
   getByUsername(username: string): Promise<User> {
-    return Promise.resolve({
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-    });
+    return Promise.resolve(createUserWithAuthenticationMockedModel());
   }
 
   updateByUsername(username: string, user: User): Promise<void> {
@@ -138,35 +107,16 @@ describe("#RecoveryPassword", () => {
     expect(spyGenerateRecovery).toBeCalled();
   });
   test("Should call repository correctly to update user passwordRecoveryToken", async () => {
-    const { sut, passwordRecoveryGenerateStub, userRepositoryStub } = makeSut();
-    const spyGenerateRecovery = jest.spyOn(
-      passwordRecoveryGenerateStub,
-      "generateRecovery"
-    );
+    const { sut, userRepositoryStub } = makeSut();
     const spyUpdateByUsername = jest.spyOn(
       userRepositoryStub,
       "updateByUsername"
     );
     await sut.execute("any_username");
-    expect(spyUpdateByUsername).toBeCalledWith("any_username", {
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-      passwordRecoveryToken: "any_passwordRecoveryToken",
-      passwordRecoveryExpiresIn: 1,
-    });
+    expect(spyUpdateByUsername).toBeCalledWith(
+      "any_username",
+      createUserWithAuthenticationMockedModel()
+    );
   });
   test("Should call sendRecoveryToken correctly", async () => {
     const { sut, sendRecoveryTokenStub } = makeSut();
