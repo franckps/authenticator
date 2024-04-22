@@ -108,6 +108,28 @@ describe("Integration", () => {
       expect(result.body.image).toEqual("any_image");
       expect(result.body.password).toBeUndefined();
     });
+
+    test("Should remove authentication correctly", async () => {
+      const result = await request(app)
+        .delete("/api/v1/logon")
+        .set("Content-Type", "application/json")
+        .set("Authorization", token)
+        .send({
+          callback: "/callback",
+        })
+        .set("Accept", "application/json");
+
+      const result2 = await request(app)
+        .post("/api/v1/me")
+        .set("Content-Type", "application/json")
+        .set("Authorization", token)
+        .send()
+        .set("Accept", "application/json");
+
+      expect(result.status).toEqual(302);
+      expect(result.header.location).toMatch("/callback");
+      expect(result2.status).toEqual(400);
+    });
   });
   describe("Password recovery flow", () => {
     test("should send password recovery link correctly", async () => {
