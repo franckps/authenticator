@@ -4,6 +4,12 @@ import { UserRepository } from "../../src/interfaces/repository";
 import { CustomError } from "../../src/utils/errors";
 import { InvalidateToken } from "../../src/interfaces/utils";
 import { RemoveAuthentication } from "../../src/services/removeAuthentication";
+import {
+  createAuthenticationMockedModel,
+  createOtherAuthenticationMockedModel,
+  createUserMockedModel,
+  createUserWithAuthenticationMockedModel,
+} from "../factories/models";
 
 interface SutTypes {
   sut: RemoveAuthentication;
@@ -26,43 +32,11 @@ class UserRepositoryStub implements UserRepository {
   }
 
   getByUsername(username: string): Promise<User> {
-    return Promise.resolve({
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-    });
+    return Promise.resolve(createUserWithAuthenticationMockedModel());
   }
 
   getByToken(token: string): Promise<User> {
-    return Promise.resolve({
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "any_code",
-        codeExpiresIn: 1,
-        token: "any_token",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-        expiresIn: 1,
-        isActive: true,
-      },
-    });
+    return Promise.resolve(createUserWithAuthenticationMockedModel());
   }
 
   updateByUsername(username: string, user: User): Promise<void> {
@@ -73,12 +47,7 @@ class UserRepositoryStub implements UserRepository {
 class InvalidateTokenStub implements InvalidateToken {
   invalidate(authentication: Authentication): Authentication {
     return {
-      code: "other_code",
-      codeExpiresIn: 1,
-      token: "other_token",
-      createdAt: "other_createdAt",
-      updatedAt: "other_updatedAt",
-      expiresIn: 1,
+      ...createOtherAuthenticationMockedModel(),
       isActive: false,
     };
   }
@@ -128,16 +97,7 @@ describe("#RemoveAuthentication", () => {
   test("Should fail case authentication be not found", async () => {
     const { sut, userRepositoryStub } = makeSut();
     const spyGetByToken = jest.spyOn(userRepositoryStub, "getByToken");
-    spyGetByToken.mockReturnValue(
-      Promise.resolve({
-        username: "any_username",
-        password: "any_password",
-        email: "any_email",
-        image: "any_image",
-        createdAt: "any_createdAt",
-        updatedAt: "any_updatedAt",
-      })
-    );
+    spyGetByToken.mockReturnValue(Promise.resolve(createUserMockedModel()));
     try {
       await sut.execute("any_token");
       expect(false).toBe(true);
@@ -150,15 +110,7 @@ describe("#RemoveAuthentication", () => {
     const { sut, invalidateTokenStub } = makeSut();
     const spyInvalidate = jest.spyOn(invalidateTokenStub, "invalidate");
     await sut.execute("any_token");
-    expect(spyInvalidate).toBeCalledWith({
-      code: "any_code",
-      codeExpiresIn: 1,
-      token: "any_token",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      expiresIn: 1,
-      isActive: true,
-    });
+    expect(spyInvalidate).toBeCalledWith(createAuthenticationMockedModel());
   });
   test("Should call repository correctly to update user by username", async () => {
     const { sut, userRepositoryStub } = makeSut();
@@ -168,21 +120,8 @@ describe("#RemoveAuthentication", () => {
     );
     await sut.execute("any_token");
     expect(spyUpdateByUsername).toBeCalledWith("any_username", {
-      username: "any_username",
-      password: "any_password",
-      email: "any_email",
-      image: "any_image",
-      createdAt: "any_createdAt",
-      updatedAt: "any_updatedAt",
-      authentication: {
-        code: "other_code",
-        codeExpiresIn: 1,
-        token: "other_token",
-        createdAt: "other_createdAt",
-        updatedAt: "other_updatedAt",
-        expiresIn: 1,
-        isActive: false,
-      },
+      ...createUserMockedModel(),
+      authentication: createOtherAuthenticationMockedModel(false),
     });
   });
   test("Should resolve on success", async () => {
