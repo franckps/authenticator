@@ -124,9 +124,11 @@ describe("#RemoveAuthentication", () => {
       authentication: createOtherAuthenticationMockedModel(false),
     });
   });
-  test("Should resolve on success", async () => {
+  test("Should return callback on success", async () => {
     const { sut } = makeSut();
-    await sut.execute("any_token");
-    expect(true).toBe(true);
+    const callback = await sut.execute("any_token", {
+      callback: "any_callback",
+    });
+    expect(callback).toEqual("any_callback");
   });
 });
