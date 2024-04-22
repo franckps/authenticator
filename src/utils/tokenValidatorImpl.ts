@@ -9,6 +9,7 @@ export class TokenValidatorImpl implements TokenValidator, CodeValidator {
     return currentDate - createdDate < authentication.codeExpiresIn;
   }
   validateTokenData(authentication: Authentication): boolean {
+    console.log({ authentication });
     if (!authentication.isActive) return false;
     const createdDate = new Date(authentication.createdAt).getTime();
     const currentDate = new Date().getTime();

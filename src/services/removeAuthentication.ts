@@ -17,7 +17,7 @@ export class RemoveAuthentication {
     if (!user || !user.authentication)
       throw new CustomError("Unauthorized user");
     user.authentication = this.invalidateToken.invalidate(user.authentication);
-    this.userRepository.updateByUsername(user.username as any, user);
+    await this.userRepository.updateByUsername(user.username as any, user);
     return callbackData?.callback || "";
   }
 }

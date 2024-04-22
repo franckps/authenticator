@@ -8,6 +8,7 @@ import {
   makeNewPasswordDefinitionService,
   makeGetUserByTokenService,
   makeEmailValidationService,
+  makeRemoveAuthentication,
 } from "./factories/servicesFactories";
 import { errorHandlerExpressCbk } from "./helpers/errorHandlerExpressCbk";
 const app = express();
@@ -22,15 +23,13 @@ const recoveryPasswordService = makeRecoveryPasswordService();
 const newPasswordDefinitionService = makeNewPasswordDefinitionService();
 const getUserByTokenService = makeGetUserByTokenService();
 const emailValidationService = makeEmailValidationService();
-
-app.get("/callback", async (req, res) => {
-  return res.json({ code: req.query.code });
-});
+const removeAuthenticationService = makeRemoveAuthentication();
 
 app.post(
   "/api/v1/register",
   errorHandlerExpressCbk(async (req, res) => {
-    const result = await createUserService.execute(req.body, req.body.callback);
+    console.log(req.body);
+    await createUserService.execute(req.body, req.body.callback);
     return res.send();
   })
 );
@@ -58,6 +57,17 @@ app.post(
   "/api/v1/logon",
   errorHandlerExpressCbk(async (req, res) => {
     const result = await authenticateService.execute(req.body);
+    res.redirect(result);
+  })
+);
+
+app.delete(
+  "/api/v1/logon",
+  errorHandlerExpressCbk(async (req, res) => {
+    const result = await removeAuthenticationService.execute(
+      req.headers.authorization,
+      req.body
+    );
     res.redirect(result);
   })
 );
