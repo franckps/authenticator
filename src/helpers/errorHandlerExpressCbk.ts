@@ -10,6 +10,10 @@ export const errorHandlerExpressCbk =
     } catch (err: any) {
       console.log(err);
       res.status(400);
+      if (!!req.query?.error_callback)
+        return res.redirect(
+          req.query.error_callback + "?message=" + err.message
+        );
       res.json({ message: err.message });
     }
   };

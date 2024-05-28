@@ -28,7 +28,11 @@ export interface PasswordRecoveryGenerate {
 }
 
 export interface SendRecoveryToken {
-  sendRecovery(user: User, passwordRecoveryToken: string): Promise<void>;
+  sendRecovery(
+    user: User,
+    passwordRecoveryToken: string,
+    callback?: string
+  ): Promise<void>;
 }
 
 export interface CodeValidator {
