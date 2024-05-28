@@ -12,7 +12,7 @@ export class RecoveryPassword {
     private readonly sendRecoveryToken: SendRecoveryToken
   ) {}
 
-  async execute(username: string): Promise<void> {
+  async execute(username: string, callback?: string): Promise<void> {
     const user = await this.userRepository.getByUsername(username);
     if (!user) throw new CustomError("User not found");
     const { passwordRecoveryToken, passwordRecoveryExpiresIn } =
@@ -29,7 +29,8 @@ export class RecoveryPassword {
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
       },
-      passwordRecoveryToken
+      passwordRecoveryToken,
+      callback
     );
   }
 }

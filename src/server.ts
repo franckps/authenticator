@@ -11,9 +11,11 @@ import {
   makeRemoveAuthentication,
 } from "./factories/servicesFactories";
 import { errorHandlerExpressCbk } from "./helpers/errorHandlerExpressCbk";
+import path from "path";
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded());
 
 const createUserService = makeCreateUserService();
 const getTokenByCodeService = makeGetTokenByCodeService();
@@ -61,8 +63,8 @@ app.post(
   })
 );
 
-app.delete(
-  "/api/v1/logon",
+app.post(
+  "/api/v1/logout",
   errorHandlerExpressCbk(async (req, res) => {
     const result = await removeAuthenticationService.execute(
       req.headers.authorization,
@@ -83,7 +85,7 @@ app.post(
 app.post(
   "/api/v1/password/recovery",
   errorHandlerExpressCbk(async (req, res) => {
-    await recoveryPasswordService.execute(req.body.username);
+    await recoveryPasswordService.execute(req.body.username, req.body.callback);
     res.send();
   })
 );

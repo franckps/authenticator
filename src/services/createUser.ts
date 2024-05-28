@@ -24,7 +24,7 @@ export class CreateUser {
     const user = await this.userRepository.getByUsername(
       userData.username as any
     );
-    if (!!user) throw new CustomError("User awready registered");
+    if (!!user) throw new CustomError("User already registered");
     const encryptedPassword = await this.passwordEncrypt.encrypt(
       userData.password as any
     );
