@@ -111,7 +111,7 @@ describe("Integration", () => {
 
     test("Should remove authentication correctly", async () => {
       const result = await request(app)
-        .delete("/api/v1/logon")
+        .post("/api/v1/logout")
         .set("Content-Type", "application/json")
         .set("Authorization", token)
         .send({
@@ -159,6 +159,60 @@ describe("Integration", () => {
       code = result.header.location.replace("/callback?code=", "");
       expect(result.status).toEqual(302);
       expect(result.header.location).toMatch("/callback?code=");
+    });
+  });
+  describe("Errors", () => {
+    test("Should redirect to errorCallback on register error", async () => {
+      spyVerify.mockImplementation(
+        (user: any, token: string, callback: string) => {
+          emailRecoveryLink = token;
+          return Promise.resolve();
+        }
+      );
+      const result = await request(app)
+        .post("/api/v1/register?error_callback=error_callback")
+        .set("Accept", "application/json")
+        .send({
+          username: "any_username5",
+          password: "any_encryptedPassword",
+          email: "any_email",
+          image: "any_image",
+          createdAt: "any_createdAt",
+          updatedAt: "any_updatedAt",
+          callback: "/callback",
+        });
+      expect(result.status).toEqual(302);
+      expect(result.header.location).toMatch(
+        "error_callback?message=User%20already%20registered"
+      );
+    });
+
+    test("Should redirect to errorCallback on logon error", async () => {
+      const result = await request(app)
+        .post("/api/v1/logon?error_callback=error_callback")
+        .send({
+          username: "invalid_username5",
+          password: "any_encryptedPassword",
+          callback: "/callback",
+        })
+        .set("Accept", "application/json");
+      expect(result.status).toEqual(302);
+      expect(result.header.location).toMatch(
+        "error_callback?message=Invalid%20username%20or%20password"
+      );
+    });
+
+    test("Should return error on logon error when no callback be provided", async () => {
+      const result = await request(app)
+        .post("/api/v1/logon")
+        .send({
+          username: "invalid_username5",
+          password: "any_encryptedPassword",
+          callback: "/callback",
+        })
+        .set("Accept", "application/json");
+      expect(result.status).toEqual(400);
+      expect(result.body.message).toMatch("Invalid username or password");
     });
   });
 });

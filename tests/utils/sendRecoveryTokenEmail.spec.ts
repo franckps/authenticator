@@ -18,15 +18,12 @@ interface SutTypes {
 }
 
 const makeSut = (): SutTypes => {
-  const sut = new SendRecoveryTokenEmail(
-    {
-      service: "any_service",
-      authUser: "any_email",
-      authPassword: "any_password",
-      from: "any_email",
-    },
-    "any_url"
-  );
+  const sut = new SendRecoveryTokenEmail({
+    service: "any_service",
+    authUser: "any_email",
+    authPassword: "any_password",
+    from: "any_email",
+  });
 
   return { sut };
 };
@@ -70,14 +67,39 @@ describe("#SendRecoveryTokenEmail", () => {
         createdAt: "any_createdAt",
         updatedAt: "any_updatedAt",
       },
-      "any_passwordRecoveryToken"
+      "any_passwordRecoveryToken",
+      undefined
     );
     expect(sendMail).toBeCalledWith(
       {
         from: "any_email",
         to: "other_email",
         subject: "Password recovery",
-        text: "any_urlany_passwordRecoveryToken",
+        text: "undefined?recoveryToken=any_passwordRecoveryToken",
+      },
+      expect.any(Function)
+    );
+  });
+  test("Should call sendMail correctly with callback case it be present", async () => {
+    const { sut } = makeSut();
+    await sut.sendRecovery(
+      {
+        username: "any_username",
+        password: "any_password",
+        email: "other_email",
+        image: "any_image",
+        createdAt: "any_createdAt",
+        updatedAt: "any_updatedAt",
+      },
+      "any_passwordRecoveryToken",
+      "any_callback"
+    );
+    expect(sendMail).toBeCalledWith(
+      {
+        from: "any_email",
+        to: "other_email",
+        subject: "Password recovery",
+        text: "any_callback?recoveryToken=any_passwordRecoveryToken",
       },
       expect.any(Function)
     );

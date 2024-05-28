@@ -158,7 +158,7 @@ describe("#CreateUser", () => {
       expect(false).toBe(true);
     } catch (err: any) {
       expect(err).toBeInstanceOf(CustomError);
-      expect(err.message).toEqual("User awready registered");
+      expect(err.message).toEqual("User already registered");
     }
   });
   test("Should call the passwordEncrypt encrypt method correctly", async () => {

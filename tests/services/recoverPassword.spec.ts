@@ -121,7 +121,7 @@ describe("#RecoveryPassword", () => {
   test("Should call sendRecoveryToken correctly", async () => {
     const { sut, sendRecoveryTokenStub } = makeSut();
     const spySendRecovery = jest.spyOn(sendRecoveryTokenStub, "sendRecovery");
-    await sut.execute("any_username");
+    await sut.execute("any_username", undefined);
     expect(spySendRecovery).toBeCalledWith(
       {
         username: "any_username",
@@ -131,7 +131,25 @@ describe("#RecoveryPassword", () => {
         createdAt: "any_createdAt",
         updatedAt: "any_updatedAt",
       },
-      "any_passwordRecoveryToken"
+      "any_passwordRecoveryToken",
+      undefined
+    );
+  });
+  test("Should call sendRecoveryToken correctly with callback", async () => {
+    const { sut, sendRecoveryTokenStub } = makeSut();
+    const spySendRecovery = jest.spyOn(sendRecoveryTokenStub, "sendRecovery");
+    await sut.execute("any_username", "any_callback");
+    expect(spySendRecovery).toBeCalledWith(
+      {
+        username: "any_username",
+        password: "any_password",
+        email: "any_email",
+        image: "any_image",
+        createdAt: "any_createdAt",
+        updatedAt: "any_updatedAt",
+      },
+      "any_passwordRecoveryToken",
+      "any_callback"
     );
   });
 });
