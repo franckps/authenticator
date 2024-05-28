@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../assets/tailwind-output.css" rel="stylesheet">
+    <title>Recuperação de senha</title>
+</head>
+
+<body class="flex justify-center items-center">
+    <form method="post" id="recoveryPasswordForm"
+        action="/api/v1/password/recovery?error_callback=http://localhost:3000/web/password-recovery">
+        <p id="errorMessageElement"></p>
+        <div class="space-y-12">
+            <div class="border-b border-gray-900/10 py-12">
+                <h2 class="text-center font-semibold leading-7 text-gray-900">Recuperação de senha</h2>
+
+                <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6 w-[100vw] max-w-96">
+                    <div class="sm:col-span-6">
+                        <label for="username" class="block text-sm font-medium leading-6 text-gray-900">Nome de
+                            usuário</label>
+                        <div class="mt-2">
+                            <input type="text" name="username" id="username" autocomplete="given-name"
+                                class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 px-2 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" name="callback" value="http://localhost:3000/callback">
+
+            <div class="mt-6 flex items-center justify-center gap-x-6">
+                <a href="../logon" class="text-sm font-semibold leading-6 text-gray-900">Cancelar</a>
+                <button type="submit"
+                    class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">Recuperar</button>
+            </div>
+        </div>
+    </form>
+</body>
+<script src="../assets/script.js"></script>
+<script>
+    const recoveryPasswordForm = document.getElementById("recoveryPasswordForm");
+    const callbackParam = new URL(document.referrer).searchParams.get("callback");
+    console.log(document.referrer);
+    console.log(callbackParam);
+    recoveryPasswordForm["callback"].value = callbackParam;
+</script>
+
+</html>

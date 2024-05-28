@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="../assets/tailwind-output.css" rel="stylesheet">
+    <title>Login</title>
+</head>
+
+<body>
+    <section class="flex justify-center py-4 bg-transparent">
+        <form action="/api/v1/logout" method="post">
+            <input type="hidden" name="callback" value="/callback/logout" />
+            <button class="text-white bg-red-500 rounded-md px-4 py-2" type="submit">Logout</button>
+        </form>
+    </section>
+</body>
+
+</html>
